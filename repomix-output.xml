@@ -1,0 +1,1801 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+public/
+  vite.svg
+src/
+  assets/
+    react.svg
+  components/
+    IntroOverlay.jsx
+    SplatScene.jsx
+    TechnicalPanel.jsx
+    TrailOverlay.jsx
+    WorldModelControls.jsx
+    WorldModelHUD.jsx
+    WorldModelSimulation.jsx
+    WorldModelStory.jsx
+  App.css
+  App.jsx
+  index.css
+  main.jsx
+.gitignore
+eslint.config.js
+index.html
+package.json
+README.md
+vite.config.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="public/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
+</file>
+
+<file path="src/assets/react.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
+</file>
+
+<file path="src/components/IntroOverlay.jsx">
+import React from "react";
+
+export default function IntroOverlay({ onClose, agentCount }) {
+    return (
+        <div id="intro-overlay">
+            <div id="intro-card">
+                <h2>World Model Guide</h2>
+                <p className="intro-subtitle">
+                    How to interpret the simulation and spot "Hallucinations".
+                </p>
+
+                <div className="intro-section">
+                    <h3>When is it "Hallucinating"?</h3>
+                    <p>
+                        <strong>Hallucination</strong> happens when the AI's internal belief (Agents) diverges from Reality (Mouse).
+                        <br />
+                        <em>Visual Sign:</em> In <strong>Error Heatmap</strong> mode, the particles turn <strong>RED</strong>.
+                    </p>
+                </div>
+
+                <div className="intro-section">
+                    <h3>Control Recipes</h3>
+                    <ul>
+                        <li>
+                            <strong>The "Good" Model (Locked In)</strong>
+                            <br />
+                            <span style={{ color: "#4ade80" }}>High Obs Weight + Low Noise.</span>
+                            <br />
+                            The agents tightly track the sensor. The model trusts what it sees more than what it imagines.
+                        </li>
+                        <li style={{ marginTop: "8px" }}>
+                            <strong>The "Dreaming" Model (Hallucinating)</strong>
+                            <br />
+                            <span style={{ color: "#f87171" }}>Low Obs Weight + High Noise.</span>
+                            <br />
+                            The agents ignore the sensor and follow their own internal dynamics (swirls). This is "creativity" or "confusion" depending on context.
+                        </li>
+                        <li style={{ marginTop: "8px" }}>
+                            <strong>The "Amnesiac" Model</strong>
+                            <br />
+                            <span style={{ color: "#60a5fa" }}>Low Memory.</span>
+                            <br />
+                            Trails vanish instantly. The model has no sense of history or momentum.
+                        </li>
+                    </ul>
+                </div>
+
+                <div className="intro-section">
+                    <h3>Visual Modes</h3>
+                    <ul>
+                        <li><strong>Standard:</strong> See the raw density of beliefs.</li>
+                        <li><strong>Multiverse:</strong> See conflicting predictions (colors = different directions).</li>
+                        <li><strong>Error Heatmap:</strong> Green = Accurate, Red = Hallucinating.</li>
+                    </ul>
+                </div>
+
+                <button id="intro-close" onClick={onClose}>Got it</button>
+            </div>
+        </div>
+    );
+}
+</file>
+
+<file path="src/components/SplatScene.jsx">
+import React from 'react';
+
+export default function SplatScene({ bundleUrl }) {
+    return (
+        <group>
+            {/* Placeholder for SplatScene */}
+            <mesh position={[0, 0, 0]}>
+                <boxGeometry args={[10, 10, 10]} />
+                <meshStandardMaterial color="orange" wireframe />
+            </mesh>
+        </group>
+    );
+}
+</file>
+
+<file path="src/components/TechnicalPanel.jsx">
+import React from "react";
+
+export default function TechnicalPanel({ onClose }) {
+    return (
+        <div className="wm-technical-panel">
+            <div className="wm-tech-header">
+                <h3>Under the Hood</h3>
+                <button onClick={onClose}>×</button>
+            </div>
+
+            <div className="wm-tech-section">
+                <h4>1. The Math (Simplified Kalman Filter)</h4>
+                <div className="wm-equation">
+                    <div className="wm-eq-row">
+                        <span className="var">v</span><sub>t+1</sub> =
+                        <span className="var">v</span><sub>t</sub> · <span className="param">memory</span> +
+                        <span className="param">K</span> · (<span className="var">obs</span> - <span className="var">x</span><sub>t</sub>)
+                    </div>
+                    <div className="wm-eq-row">
+                        <span className="var">x</span><sub>t+1</sub> =
+                        <span className="var">x</span><sub>t</sub> +
+                        <span className="var">v</span><sub>t+1</sub> +
+                        <span className="func">Noise</span>(t)
+                    </div>
+                </div>
+                <p>
+                    This is a <strong>Particle Filter</strong> update step.
+                    <span className="param"> K</span> is the "Kalman Gain" (Observation Weight).
+                    It blends the <em>Prediction</em> (internal velocity) with the <em>Correction</em> (pull towards observation).
+                </p>
+            </div>
+
+            <div className="wm-tech-section">
+                <h4>2. The Code (Simulation Loop)</h4>
+                <pre className="wm-code-block">
+                    {`// 1. Dynamics Prior (Prediction)
+const noise = vnoise(a.x, a.y, t);
+
+// 2. Observation (Correction)
+const dx = obs.x - a.x;
+const K = params.obsWeight;
+a.vx += (dx * K) + noise;
+
+// 3. State Update
+a.x += a.vx * params.memory;`}
+                </pre>
+            </div>
+
+            <div className="wm-tech-section">
+                <h4>3. Directions for Improvement</h4>
+                <ul>
+                    <li>
+                        <strong>Resampling (SIR):</strong> Currently, particles never die.
+                        A true Particle Filter would <em>kill</em> particles far from the observation and <em>respawn</em> them near high-probability areas to track complex distributions better.
+                    </li>
+                    <li>
+                        <strong>Learned Dynamics:</strong> Replace the static <code>vnoise()</code> function with a
+                        <strong> Neural Network</strong> (e.g., a Transformer or RSSM) trained on real physics data.
+                        This turns it into a "Learned World Model" (like DreamerV3).
+                    </li>
+                    <li>
+                        <strong>Active Inference:</strong> Give agents <em>goals</em>.
+                        Instead of just tracking the mouse, they could try to minimize "Free Energy" (surprise) by moving to where they <em>expect</em> the mouse to be.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    );
+}
+</file>
+
+<file path="src/components/TrailOverlay.jsx">
+import React from 'react';
+
+export default function TrailOverlay({ bundleUrl }) {
+    return (
+        <group>
+            {/* Placeholder for TrailOverlay */}
+            <mesh position={[20, 0, 0]}>
+                <sphereGeometry args={[5, 16, 16]} />
+                <meshStandardMaterial color="cyan" wireframe />
+            </mesh>
+        </group>
+    );
+}
+</file>
+
+<file path="src/components/WorldModelControls.jsx">
+import React from "react";
+
+export default function WorldModelControls({
+    params,
+    setParams,
+    agentCount,
+    onToggleTech
+}) {
+    const handleChange = (key, value) => {
+        const newValue = key === "visualMode" ? value : parseFloat(value);
+        setParams((prev) => ({ ...prev, [key]: newValue }));
+    };
+
+    return (
+        <div className="wm-controls">
+            <div className="wm-controls-title">World-Model Microcosm</div>
+
+            <div className="wm-control-group">
+                <label>Visual Metaphor:</label>
+                <select
+                    value={params.visualMode}
+                    onChange={(e) => handleChange("visualMode", e.target.value)}
+                    style={{
+                        width: "100%",
+                        background: "rgba(0,0,0,0.3)",
+                        border: "1px solid rgba(255,255,255,0.2)",
+                        color: "#fff",
+                        padding: "4px 8px",
+                        borderRadius: "6px",
+                        fontSize: "13px"
+                    }}
+                >
+                    <option value="standard">Standard (Ghost Trails)</option>
+                    <option value="velocity">Multiverse (Color by Angle)</option>
+                    <option value="error">Error Heatmap (Dist to Truth)</option>
+                </select>
+            </div>
+
+            <div className="wm-control-group">
+                <label>Agent Count: {params.agentCount}</label>
+                <input
+                    type="range"
+                    min="100"
+                    max="10000"
+                    step="100"
+                    value={params.agentCount}
+                    onChange={(e) => handleChange("agentCount", e.target.value)}
+                />
+            </div>
+
+            <div className="wm-control-group">
+                <label>Spread (Distribution): {Math.round(params.spread * 100)}%</label>
+                <input
+                    type="range"
+                    min="0.1"
+                    max="1.0"
+                    step="0.05"
+                    value={params.spread}
+                    onChange={(e) => handleChange("spread", e.target.value)}
+                />
+            </div>
+
+            <div className="wm-control-group">
+                <label>Belief retention (memory):</label>
+                <input
+                    type="range"
+                    min="0.80"
+                    max="0.999"
+                    step="0.001"
+                    value={params.memory}
+                    onChange={(e) => handleChange("memory", e.target.value)}
+                />
+            </div>
+
+            <div className="wm-control-group">
+                <label>Stochasticity (exploration noise):</label>
+                <input
+                    type="range"
+                    min="0"
+                    max="2"
+                    step="0.01"
+                    value={params.noise}
+                    onChange={(e) => handleChange("noise", e.target.value)}
+                />
+            </div>
+
+            <div className="wm-control-group">
+                <label>Observation weight:</label>
+                <input
+                    type="range"
+                    min="0"
+                    max="0.5"
+                    step="0.005"
+                    value={params.obsWeight}
+                    onChange={(e) => handleChange("obsWeight", e.target.value)}
+                />
+            </div>
+
+            <div className="wm-controls-footer">
+                Move pointer / tap & drag to provide observations.<br />
+                Agents update beliefs + roll out futures.
+                <div style={{ marginTop: 12 }}>
+                    <button
+                        onClick={onToggleTech}
+                        style={{
+                            background: "rgba(255,255,255,0.1)",
+                            border: "none",
+                            color: "#94a3b8",
+                            padding: "6px 12px",
+                            borderRadius: "4px",
+                            fontSize: "11px",
+                            cursor: "pointer",
+                            width: "100%"
+                        }}
+                    >
+                        View Math & Code
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+</file>
+
+<file path="src/components/WorldModelHUD.jsx">
+import React, { useState } from "react";
+
+/**
+ * Central place for all metric definitions.
+ * You can tweak wording here without touching any UI logic.
+ */
+const METRIC_DEFS = {
+    probeIndex: {
+        label: "Probe agent index",
+        description:
+            "Which agent’s internal state you’re currently inspecting. " +
+            "Useful when multiple world-model agents are running in parallel.",
+    },
+    latentX: {
+        label: "Latent x",
+        description:
+            "The agent’s internal x-coordinate inside its learned latent world model. " +
+            "This is not a raw simulator coordinate; it’s the position in the model’s ‘mental map’.",
+    },
+    latentY: {
+        label: "Latent y",
+        description:
+            "The agent’s internal y-coordinate in latent space, part of its compressed belief " +
+            "about where it is in the world.",
+    },
+    beliefVx: {
+        label: "Belief vx",
+        description:
+            "Agent’s predicted velocity along the x-axis in latent space. " +
+            "Derived from the world model, not directly from the environment.",
+    },
+    beliefVy: {
+        label: "Belief vy",
+        description:
+            "Agent’s predicted velocity along the y-axis in latent space. " +
+            "Together with Belief vx this forms the belief-velocity vector.",
+    },
+    speedNorm: {
+        label: "Speed ∥v∥",
+        description:
+            "Magnitude of the belief-velocity vector: sqrt(vx² + vy²). " +
+            "Represents how fast the agent thinks it is moving through its internal world.",
+    },
+    phase: {
+        label: "Phase (uncertainty)",
+        description:
+            "Scalar representing uncertainty or phase in the agent’s internal dynamics. " +
+            "Higher values ≈ more uncertain or noisy predictions; lower values ≈ confident, stable dynamics.",
+    },
+    obsX: {
+        label: "Observation x",
+        description:
+            "Last observed x-position coming from the real environment (pixels, coordinates, or sensor input).",
+    },
+    obsY: {
+        label: "Observation y",
+        description:
+            "Last observed y-position from the environment, paired with Observation x.",
+    },
+    obsActive: {
+        label: "Obs active?",
+        description:
+            "Whether a recent observation is currently being used to update the belief state. " +
+            "true = grounded in fresh sensory input, false = running in predictive / imagined mode.",
+    },
+    beliefRetention: {
+        label: "Belief retention",
+        description:
+            "How much of the previous belief state is carried into the next step. " +
+            "High values → slow-changing, memory-rich beliefs; low values → beliefs dominated by new evidence.",
+    },
+    stochasticity: {
+        label: "Stochasticity",
+        description:
+            "Amount of randomness injected into the world-model’s predictions. " +
+            "Higher values encourage more exploratory or chaotic trajectories.",
+    },
+    obsWeight: {
+        label: "Observation wt.",
+        description:
+            "Blend factor between observation and prediction during the update step. " +
+            "High values → perception dominates; low values → internal prediction dominates. " +
+            "Conceptually similar to a Kalman-filter gain, but in learned latent space.",
+    },
+};
+
+/** Tiny info icon (no external icon library needed) */
+const InfoIcon = ({ size = 12 }) => (
+    <svg
+        width={size}
+        height={size}
+        viewBox="0 0 20 20"
+        aria-hidden="true"
+        style={{ display: "block" }}
+    >
+        <circle cx="10" cy="10" r="9" stroke="currentColor" fill="none" />
+        <line x1="10" y1="8" x2="10" y2="14" stroke="currentColor" />
+        <circle cx="10" cy="5" r="1" fill="currentColor" />
+    </svg>
+);
+
+/** Simple tooltip on hover */
+const Tooltip = ({ text }) => (
+    <div className="wm-tooltip">
+        {text}
+    </div>
+);
+
+/** Centered modal for full definitions */
+const DefinitionModal = ({ open, onClose, title, body }) => {
+    if (!open) return null;
+    return (
+        <div className="wm-modal-backdrop" onClick={onClose}>
+            <div
+                className="wm-modal"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="wm-modal-header">
+                    <h2>{title}</h2>
+                    <button className="wm-modal-close" onClick={onClose}>
+                        ×
+                    </button>
+                </div>
+                <div className="wm-modal-body">
+                    <p>{body}</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+/**
+ * WorldModelHUD
+ * Props:
+ *   state: {
+ *     probeIndex,
+ *     latentX, latentY,
+ *     beliefVx, beliefVy, speedNorm, phase,
+ *     obsX, obsY, obsActive,
+ *     beliefRetention, stochasticity, obsWeight
+ *   }
+ */
+export default function WorldModelHUD({ state }) {
+    const [hoverKey, setHoverKey] = useState(null);
+    const [modalMetric, setModalMetric] = useState(null);
+
+    const openModal = (metricKey) => {
+        setModalMetric(metricKey);
+    };
+
+    const closeModal = () => setModalMetric(null);
+
+    const renderRow = (metricKey, valueFormatter = (v) => v) => {
+        const def = METRIC_DEFS[metricKey];
+        if (!def) return null;
+        const value = valueFormatter(state?.[metricKey]);
+
+        return (
+            <div
+                key={metricKey}
+                className="wm-row"
+                onMouseLeave={() => setHoverKey(null)}
+            >
+                <div className="wm-row-label" onClick={() => openModal(metricKey)}>
+                    {def.label}
+                </div>
+                <div className="wm-row-value">{value}</div>
+
+                <div
+                    className="wm-info-wrapper"
+                    onMouseEnter={() => setHoverKey(metricKey)}
+                    onFocus={() => setHoverKey(metricKey)}
+                    onClick={() => openModal(metricKey)}
+                >
+                    <InfoIcon />
+                    {hoverKey === metricKey && <Tooltip text={def.description} />}
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <>
+            <div className="wm-hud">
+                <div className="wm-hud-title">World-Model HUD</div>
+
+                <div className="wm-hud-section-label">Agent</div>
+                {renderRow("probeIndex", (v) => (v ?? 0))}
+
+                <div className="wm-hud-section-label">Latent position</div>
+                {renderRow("latentX", (v) => (v != null ? v.toFixed(1) : "—"))}
+                {renderRow("latentY", (v) => (v != null ? v.toFixed(1) : "—"))}
+
+                <div className="wm-hud-section-label">Belief dynamics</div>
+                {renderRow("beliefVx", (v) => (v != null ? v.toFixed(3) : "—"))}
+                {renderRow("beliefVy", (v) => (v != null ? v.toFixed(3) : "—"))}
+                {renderRow("speedNorm", (v) => (v != null ? v.toFixed(3) : "—"))}
+                {renderRow("phase", (v) => (v != null ? v.toFixed(3) : "—"))}
+
+                <div className="wm-hud-section-label">Observations</div>
+                {renderRow("obsX", (v) => (v != null ? v.toFixed(1) : "—"))}
+                {renderRow("obsY", (v) => (v != null ? v.toFixed(1) : "—"))}
+                {renderRow("obsActive", (v) => (v ? "true" : "false"))}
+
+                <div className="wm-hud-section-label">Meta-parameters</div>
+                {renderRow("beliefRetention", (v) =>
+                    v != null ? v.toFixed(3) : "—"
+                )}
+                {renderRow("stochasticity", (v) =>
+                    v != null ? v.toFixed(2) : "—"
+                )}
+                {renderRow("obsWeight", (v) =>
+                    v != null ? v.toFixed(3) : "—"
+                )}
+
+                <div className="wm-hud-section-label" style={{ marginTop: 16, color: "#fff" }}>
+                    System Status
+                </div>
+                <div style={{
+                    marginTop: 4,
+                    padding: "8px 10px",
+                    background: "rgba(255,255,255,0.05)",
+                    borderRadius: 6,
+                    fontSize: "11px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                }}>
+                    <span>Regime:</span>
+                    <strong style={{
+                        color: (state?.obsWeight > 0.2 && state?.stochasticity < 1.2) ? "#4ade80" :
+                            (state?.obsWeight < 0.05) ? "#f87171" : "#fbbf24"
+                    }}>
+                        {(state?.obsWeight > 0.2 && state?.stochasticity < 1.2) ? "LOCKED (Stable)" :
+                            (state?.obsWeight < 0.05) ? "HALLUCINATING" : "UNCERTAIN"}
+                    </strong>
+                </div>
+            </div>
+
+            {/* Pop-up with full definition */}
+            <DefinitionModal
+                open={!!modalMetric}
+                onClose={closeModal}
+                title={modalMetric ? METRIC_DEFS[modalMetric].label : ""}
+                body={modalMetric ? METRIC_DEFS[modalMetric].description : ""}
+            />
+        </>
+    );
+}
+</file>
+
+<file path="src/components/WorldModelSimulation.jsx">
+import React, { useRef, useEffect } from 'react';
+
+// -----------------------------------------------------------
+// Noise / Math helpers from original snippet
+// -----------------------------------------------------------
+function hash2(x, y) {
+    const s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453123;
+    return s - Math.floor(s);
+}
+function smooth(t) {
+    return t * t * (3 - 2 * t);
+}
+function vnoise(x, y) {
+    const xi = Math.floor(x);
+    const yi = Math.floor(y);
+    const xf = x - xi;
+    const yf = y - yi;
+    const v00 = hash2(xi, yi);
+    const v10 = hash2(xi + 1, yi);
+    const v01 = hash2(xi, yi + 1);
+    const v11 = hash2(xi + 1, yi + 1);
+    const i1 = v00 + (v10 - v00) * smooth(xf);
+    const i2 = v01 + (v11 - v01) * smooth(xf);
+    return i1 + (i2 - i1) * smooth(yf);
+}
+
+export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCountChange }) {
+    const canvasRef = useRef(null);
+
+    // Use a ref to keep track of params inside the animation loop
+    // without causing the effect to re-run and reset the simulation.
+    const paramsRef = useRef(params);
+    useEffect(() => {
+        paramsRef.current = params;
+    }, [params]);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+        let animationFrameId;
+
+        // -----------------------------------------------------------
+        // Configuration & State
+        // -----------------------------------------------------------
+        let W = (canvas.width = window.innerWidth);
+        let H = (canvas.height = window.innerHeight);
+
+        // -----------------------------------------------------------
+        // Agents Setup (Re-run when count/spread changes)
+        // -----------------------------------------------------------
+        // We use a mutable array ref so we don't need to re-bind the render loop
+        // but we do need to re-populate it.
+
+        const initAgents = () => {
+            const N = paramsRef.current.agentCount || 4000;
+            const spread = paramsRef.current.spread || 1.0;
+
+            if (onAgentCountChange) onAgentCountChange(N);
+
+            // Calculate spawn bounds based on spread
+            // spread=1.0 -> full screen
+            // spread=0.1 -> small center box
+            const marginX = (W * (1 - spread)) / 2;
+            const marginY = (H * (1 - spread)) / 2;
+            const spawnW = W * spread;
+            const spawnH = H * spread;
+
+            return new Array(N).fill(0).map((_, i) => ({
+                index: i,
+                x: marginX + Math.random() * spawnW,
+                y: marginY + Math.random() * spawnH,
+                vx: 0,
+                vy: 0,
+                phase: Math.random(),
+            }));
+        };
+
+        let agents = initAgents();
+
+        // Check if we need to re-init (simple polling in render loop or effect dependency?)
+        // Effect dependency is cleaner for initialization.
+        // But we want to avoid re-attaching event listeners.
+        // Let's just use a separate effect for agents? 
+        // Actually, simpler: just check paramsRef in the loop? 
+        // No, re-allocating 10k objects per frame is bad.
+        // Let's use a "dirty" flag or just compare counts.
+
+        let currentCount = agents.length;
+        let currentSpread = paramsRef.current.spread;
+
+        // -----------------------------------------------------------
+        // Interaction State
+        // -----------------------------------------------------------
+        let obs = { x: W / 2, y: H / 2, active: false };
+
+        const handleResize = () => {
+            W = canvas.width = window.innerWidth;
+            H = canvas.height = window.innerHeight;
+        };
+
+        const updatePointer = (clientX, clientY) => {
+            obs.x = clientX;
+            obs.y = clientY;
+        };
+
+        // Event Listeners
+        window.addEventListener('resize', handleResize);
+
+        const onMouseMove = (e) => updatePointer(e.clientX, e.clientY);
+        const onTouchMove = (e) => {
+            if (e.touches[0]) updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+            e.preventDefault();
+        };
+        const onDown = () => (obs.active = true);
+        const onUp = () => (obs.active = false);
+
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('touchmove', onTouchMove, { passive: false });
+        window.addEventListener('mousedown', onDown);
+        window.addEventListener('mouseup', onUp);
+        window.addEventListener('touchstart', onDown);
+        window.addEventListener('touchend', onUp);
+
+        // -----------------------------------------------------------
+        // Animation Loop
+        // -----------------------------------------------------------
+        let t = 0;
+        const render = () => {
+            t += 0.003;
+            const currentParams = paramsRef.current;
+
+            // Check for Re-init triggers
+            if (currentParams.agentCount !== currentCount || currentParams.spread !== currentSpread) {
+                agents = initAgents();
+                currentCount = agents.length;
+                currentSpread = currentParams.spread;
+            }
+
+            // (a) Memory decay (trails)
+            ctx.fillStyle = `rgba(10,12,14,${1 - currentParams.memory})`;
+            ctx.fillRect(0, 0, W, H);
+
+            // (b) Observation visualization
+            const obsGrad = ctx.createRadialGradient(obs.x, obs.y, 4, obs.x, obs.y, 120);
+            obsGrad.addColorStop(0, `rgba(180,200,255,0.05)`);
+            obsGrad.addColorStop(1, `rgba(255,255,255,0)`);
+            ctx.fillStyle = obsGrad;
+            ctx.beginPath();
+            ctx.arc(obs.x, obs.y, 120, 0, Math.PI * 2);
+            ctx.fill();
+
+            // (c) & (d) Dynamics + Rollout
+
+            // We'll track the "Probe" agent (index 0) to send to HUD
+            let probeAgent = agents[0];
+
+            // Prepare batches for colored rendering
+            // Standard: 1 batch
+            // Velocity: 4 batches (Cyan, Magenta, Yellow, White)
+            // Error: 3 batches (Blue, Purple, Red)
+            const batches = {
+                standard: [],
+                // Velocity buckets (by quadrant)
+                v1: [], v2: [], v3: [], v4: [],
+                // Error buckets (by distance)
+                eLow: [], eMid: [], eHigh: []
+            };
+
+            for (let i = 0; i < agents.length; i++) {
+                const a = agents[i];
+
+                // Dynamics prior (noise field)
+                const scale = 0.0017 * currentParams.noise;
+                const n = vnoise(a.x * scale + t * 0.7, a.y * scale - t * 0.5);
+                const ang = n * Math.PI * 2 + a.phase * 0.3;
+
+                // Observation update
+                const dx = obs.x - a.x;
+                const dy = obs.y - a.y;
+                const dist = Math.hypot(dx, dy) + 1e-5;
+
+                // "Kalman gain" equivalent
+                const K = currentParams.obsWeight * (obs.active ? 1.8 : 0.8);
+                const obsX = (dx / dist) * K;
+                const obsY = (dy / dist) * K;
+
+                // Belief update
+                a.vx = (a.vx + Math.cos(ang) * 0.15 + obsX) * 0.96;
+                a.vy = (a.vy + Math.sin(ang) * 0.15 + obsY) * 0.96;
+
+                // Rollout
+                const prevX = a.x;
+                const prevY = a.y;
+                a.x += a.vx;
+                a.y += a.vy;
+
+                // Wrap
+                if (a.x < 0) a.x += W;
+                if (a.x > W) a.x -= W;
+                if (a.y < 0) a.y += H;
+                if (a.y > H) a.y -= H;
+
+                // Batching for render
+                if (currentParams.visualMode === 'velocity') {
+                    // Color by angle
+                    const angle = Math.atan2(a.vy, a.vx);
+                    if (angle > 0 && angle < 1.57) batches.v1.push(prevX, prevY, a.x, a.y);
+                    else if (angle >= 1.57) batches.v2.push(prevX, prevY, a.x, a.y);
+                    else if (angle < 0 && angle > -1.57) batches.v3.push(prevX, prevY, a.x, a.y);
+                    else batches.v4.push(prevX, prevY, a.x, a.y);
+                } else if (currentParams.visualMode === 'error') {
+                    // Color by distance to obs
+                    if (dist < 150) batches.eLow.push(prevX, prevY, a.x, a.y);
+                    else if (dist < 400) batches.eMid.push(prevX, prevY, a.x, a.y);
+                    else batches.eHigh.push(prevX, prevY, a.x, a.y);
+                } else {
+                    // Standard
+                    batches.standard.push(prevX, prevY, a.x, a.y);
+                }
+            }
+
+            ctx.lineWidth = currentParams.visualMode === 'error' ? 2 : 1;
+
+            const drawBatch = (coords, color) => {
+                if (coords.length === 0) return;
+                ctx.strokeStyle = color;
+                ctx.beginPath();
+                for (let i = 0; i < coords.length; i += 4) {
+                    ctx.moveTo(coords[i], coords[i + 1]);
+                    ctx.lineTo(coords[i + 2], coords[i + 3]);
+                }
+                ctx.stroke();
+            };
+
+            if (currentParams.visualMode === 'velocity') {
+                drawBatch(batches.v1, 'rgba(0, 255, 255, 0.4)'); // Cyan
+                drawBatch(batches.v2, 'rgba(255, 0, 255, 0.4)'); // Magenta
+                drawBatch(batches.v3, 'rgba(255, 255, 0, 0.4)'); // Yellow
+                drawBatch(batches.v4, 'rgba(255, 255, 255, 0.4)'); // White
+            } else if (currentParams.visualMode === 'error') {
+                // Heatmap Style: High visibility
+                drawBatch(batches.eLow, 'rgba(0, 255, 100, 0.9)');   // Bright Green (Close)
+                drawBatch(batches.eMid, 'rgba(255, 200, 0, 0.6)');   // Orange/Yellow (Medium)
+                drawBatch(batches.eHigh, 'rgba(255, 0, 50, 0.4)');   // Red (Far)
+            } else {
+                drawBatch(batches.standard, 'rgba(210, 225, 245, 0.08)');
+            }
+
+            // Update HUD with Probe Data
+            if (onUpdateHUD) {
+                const speed = Math.sqrt(probeAgent.vx ** 2 + probeAgent.vy ** 2);
+                onUpdateHUD({
+                    probeIndex: probeAgent.index,
+                    latentX: probeAgent.x,
+                    latentY: probeAgent.y,
+                    beliefVx: probeAgent.vx,
+                    beliefVy: probeAgent.vy,
+                    speedNorm: speed,
+                    phase: probeAgent.phase,
+                    obsX: obs.x,
+                    obsY: obs.y,
+                    obsActive: obs.active,
+                    beliefRetention: currentParams.memory,
+                    stochasticity: currentParams.noise,
+                    obsWeight: currentParams.obsWeight,
+                });
+            }
+
+            animationFrameId = requestAnimationFrame(render);
+        };
+
+        // Start
+        ctx.fillStyle = '#0a0c0e';
+        ctx.fillRect(0, 0, W, H);
+        render();
+
+        // Cleanup
+        return () => {
+            cancelAnimationFrame(animationFrameId);
+            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('touchmove', onTouchMove);
+            window.removeEventListener('mousedown', onDown);
+            window.removeEventListener('mouseup', onUp);
+            window.removeEventListener('touchstart', onDown);
+            window.removeEventListener('touchend', onUp);
+        };
+    }, []); // Run once on mount
+
+    return (
+        <canvas
+            ref={canvasRef}
+            style={{ display: 'block', position: 'absolute', top: 0, left: 0, zIndex: 0 }}
+        />
+    );
+}
+</file>
+
+<file path="src/components/WorldModelStory.jsx">
+import React, { useMemo } from "react";
+
+export default function WorldModelStory({ params }) {
+    const story = useMemo(() => {
+        const { obsWeight, noise, memory } = params;
+
+        // 1. Check for "Hallucination" (Detachment from reality)
+        if (obsWeight < 0.04) {
+            return (
+                <span>
+                    <strong style={{ color: "#f87171" }}>The AI is dreaming.</strong> With observation weight so low, it barely notices the real world (your cursor).
+                    It relies entirely on its internal priors. In a real LLM or robot, this causes <em>hallucinations</em>—confidently stating things that aren't true because it ignores external evidence.
+                </span>
+            );
+        }
+
+        // 2. Check for "Amnesia" (Low Memory)
+        if (memory < 0.88) {
+            return (
+                <span>
+                    <strong style={{ color: "#60a5fa" }}>The AI has no attention span.</strong> It forgets its past beliefs almost instantly.
+                    While it reacts quickly to new data, it cannot build a coherent long-term understanding of the world. It lives entirely in the "now."
+                </span>
+            );
+        }
+
+        // 3. Check for "High Uncertainty" (High Noise)
+        if (noise > 1.6) {
+            return (
+                <span>
+                    <strong style={{ color: "#fbbf24" }}>The AI is confused.</strong> High stochasticity means it believes <em>anything</em> could happen next.
+                    Its predictions spread out in all directions. This is useful for exploration, but bad for precise planning.
+                </span>
+            );
+        }
+
+        // 4. Check for "Overconfidence" (Low Noise + High Memory)
+        if (noise < 0.3 && memory > 0.95) {
+            return (
+                <span>
+                    <strong style={{ color: "#c084fc" }}>The AI is dogmatic.</strong> It believes the future is perfectly deterministic.
+                    If the world changes unexpectedly, this AI will fail catastrophically because it left no room for doubt.
+                </span>
+            );
+        }
+
+        // 5. Check for "Precision / Locked In" (High Obs + Moderate Noise)
+        if (obsWeight > 0.2) {
+            return (
+                <span>
+                    <strong style={{ color: "#4ade80" }}>The AI is grounded.</strong> It trusts its sensors implicitly.
+                    This is ideal for a robot arm catching a ball—it tracks reality tightly. However, it may lack the "imagination" needed to solve creative problems.
+                </span>
+            );
+        }
+
+        // Default / Balanced
+        return (
+            <span>
+                <strong style={{ color: "#fff" }}>Balanced Learning.</strong> The AI is maintaining a healthy mix of internal prediction and external observation.
+                It respects the data but keeps an open mind about the future.
+            </span>
+        );
+    }, [params.obsWeight, params.noise, params.memory]);
+
+    return (
+        <div className="wm-story-hud">
+            {story}
+        </div>
+    );
+}
+</file>
+
+<file path="src/App.css">
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+</file>
+
+<file path="src/App.jsx">
+import React, { useState } from "react";
+import WorldModelSimulation from "./components/WorldModelSimulation.jsx";
+import WorldModelHUD from "./components/WorldModelHUD.jsx";
+import WorldModelControls from "./components/WorldModelControls.jsx";
+import WorldModelStory from "./components/WorldModelStory.jsx";
+import TechnicalPanel from "./components/TechnicalPanel.jsx";
+import IntroOverlay from "./components/IntroOverlay.jsx";
+
+const App = () => {
+  const [hudState, setHudState] = useState(null);
+  const [agentCount, setAgentCount] = useState(0);
+  const [showIntro, setShowIntro] = useState(true);
+  const [showTech, setShowTech] = useState(false);
+  const [params, setParams] = useState({
+    agentCount: 4000,
+    spread: 1.0,
+    memory: 0.96,
+    noise: 1.0,
+    obsWeight: 0.08,
+    visualMode: "standard", // standard, velocity, error
+  });
+
+  return (
+    <div style={{ width: "100vw", height: "100vh", position: "relative", overflow: "hidden", background: "#0a0c0e" }}>
+      {/* The 2D Simulation Canvas */}
+      <WorldModelSimulation
+        onUpdateHUD={setHudState}
+        params={params}
+        onAgentCountChange={setAgentCount}
+      />
+
+      {/* Controls */}
+      <WorldModelControls
+        params={params}
+        setParams={setParams}
+        agentCount={agentCount}
+        onToggleTech={() => setShowTech(!showTech)}
+      />
+
+      {/* HUD overlays on top of the canvas */}
+      <WorldModelHUD state={hudState} />
+
+      {/* Story HUD (Bottom Center) */}
+      <WorldModelStory params={params} />
+
+      {/* Technical Panel */}
+      {showTech && <TechnicalPanel onClose={() => setShowTech(false)} />}
+
+      {/* Intro Overlay */}
+      {showIntro && (
+        <IntroOverlay
+          onClose={() => setShowIntro(false)}
+          agentCount={agentCount}
+        />
+      )}
+
+      {/* Help Button to reopen intro */}
+      {!showIntro && (
+        <button
+          id="intro-help-button"
+          onClick={() => setShowIntro(true)}
+          title="Show Intro"
+        >
+          ?
+        </button>
+      )}
+    </div>
+  );
+};
+
+export default App;
+</file>
+
+<file path="src/index.css">
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+
+  a:hover {
+    color: #747bff;
+  }
+
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* HUD container */
+.wm-hud {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+  min-width: 260px;
+  max-width: 320px;
+  padding: 16px 18px;
+  background: rgba(10, 10, 15, 0.92);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f7f7ff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    sans-serif;
+  font-size: 12px;
+  line-height: 1.3;
+  pointer-events: auto;
+}
+
+/* Title */
+.wm-hud-title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Section label */
+.wm-hud-section-label {
+  margin-top: 10px;
+  margin-bottom: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* Row */
+.wm-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  column-gap: 8px;
+  align-items: center;
+  padding: 2px 0;
+}
+
+.wm-row-label {
+  cursor: pointer;
+}
+
+.wm-row-label:hover {
+  text-decoration: underline;
+}
+
+.wm-row-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.wm-info-wrapper {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+}
+
+/* Tooltip */
+.wm-tooltip {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: 260px;
+  padding: 6px 8px;
+  background: rgba(15, 15, 25, 0.98);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  font-size: 11px;
+  line-height: 1.3;
+  z-index: 40;
+}
+
+/* Modal */
+.wm-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.wm-modal {
+  background: #080812;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 16px 18px;
+  width: min(420px, 90vw);
+  color: #f7f7ff;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.6);
+}
+
+.wm-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.wm-modal-header h2 {
+  font-size: 14px;
+  margin: 0;
+}
+
+.wm-modal-close {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* Controls Container */
+.wm-controls {
+  position: fixed;
+  left: 24px;
+  top: 24px;
+  width: 280px;
+  padding: 16px 18px;
+  background: rgba(15, 18, 22, 0.6);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #cfd7df;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.3;
+  z-index: 50;
+}
+
+.wm-controls-title {
+  font-weight: 700;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: #fff;
+}
+
+.wm-control-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+.wm-control-group {
+  margin-bottom: 12px;
+}
+
+.wm-control-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.wm-control-group input[type="range"] {
+  width: 100%;
+  cursor: pointer;
+  accent-color: #2997ff;
+}
+
+.wm-controls-footer {
+  margin-top: 16px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.4;
+}
+
+
+.intro-subtitle {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+.intro-section {
+  margin-bottom: 16px;
+}
+
+.intro-section h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #2997ff;
+  margin-bottom: 4px;
+  margin-top: 0;
+}
+
+.intro-section p {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.5;
+}
+
+.intro-section ul {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.intro-section li {
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+/* Intro Overlay */
+#intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+#intro-card {
+  max-width: 500px;
+  background: #11151b;
+  border-radius: 16px;
+  padding: 24px 28px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+#intro-card h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  font-size: 20px;
+  color: #fff;
+}
+
+
+#intro-card h3 {
+  margin-bottom: 0.25rem;
+  margin-top: 1rem;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+  color: #fff;
+}
+
+#intro-card ul {
+  padding-left: 18px;
+  margin-top: 0.25rem;
+}
+
+#intro-card li {
+  margin-bottom: 0.25rem;
+}
+
+#intro-close {
+  margin-top: 1rem;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: none;
+  background: #f2c14f;
+  color: #11151b;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  transition: transform 0.1s;
+}
+
+#intro-close:hover {
+  transform: scale(1.05);
+}
+
+#intro-help-button {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(20, 24, 30, 0.9);
+  color: #f5f5f5;
+  cursor: pointer;
+  font-weight: 600;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+#intro-help-button:hover {
+  background: rgba(40, 44, 50, 1);
+}
+
+/* Story HUD (Bottom Center) */
+.wm-story-hud {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(600px, 90vw);
+  padding: 16px 24px;
+  background: rgba(15, 18, 22, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 40;
+  transition: all 0.3s ease;
+}
+
+.wm-story-hud strong {
+  font-weight: 600;
+}
+
+/* Technical Panel */
+.wm-technical-panel {
+  position: fixed;
+  right: 24px;
+  top: 360px;
+  /* Below the HUD */
+  width: 320px;
+  max-height: calc(100vh - 400px);
+  overflow-y: auto;
+  background: rgba(10, 12, 16, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  color: #cbd5e1;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  z-index: 45;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.wm-tech-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+}
+
+.wm-tech-header h3 {
+  margin: 0;
+  font-size: 14px;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.wm-tech-header button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.wm-tech-section {
+  margin-bottom: 20px;
+}
+
+.wm-tech-section h4 {
+  margin: 0 0 8px 0;
+  color: #94a3b8;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wm-tech-section p {
+  margin: 0;
+  line-height: 1.5;
+  color: #94a3b8;
+}
+
+.wm-tech-section ul {
+  padding-left: 16px;
+  margin: 8px 0 0 0;
+}
+
+.wm-tech-section li {
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.wm-equation {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 15px;
+  text-align: center;
+}
+
+.wm-eq-row {
+  margin-bottom: 4px;
+}
+
+.wm-equation .var {
+  color: #fff;
+}
+
+.wm-equation .param {
+  color: #60a5fa;
+  font-family: monospace;
+  font-style: normal;
+  font-size: 12px;
+}
+
+.wm-equation .func {
+  color: #f472b6;
+  font-family: monospace;
+  font-style: normal;
+  font-size: 12px;
+}
+
+.wm-code-block {
+  background: #0f172a;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #a5b4fc;
+  white-space: pre-wrap;
+}
+</file>
+
+<file path="src/main.jsx">
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+</file>
+
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+</file>
+
+<file path="eslint.config.js">
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+</file>
+
+<file path="index.html">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>world_model_hud</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="package.json">
+{
+  "name": "world_model_hud",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.4.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.181.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "vite": "npm:rolldown-vite@7.2.5"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@7.2.5"
+  }
+}
+</file>
+
+<file path="README.md">
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+</file>
+
+<file path="vite.config.js">
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+</file>
+
+</files>
