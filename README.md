@@ -1,16 +1,68 @@
-# React + Vite
+# World Model HUD
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**An interactive visualization of how AI agents "imagine" the future.**
 
-Currently, two official plugins are available:
+[![World Model Research](https://img.shields.io/badge/Presented%20by-World%20Model%20Research-2997ff)](https://worldmodelresearch.com)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This project is a visual metaphor for **Neural World Models** (like Dreamer, JEPA, or RSSM). It visualizes the internal "latent state" of an AI as a particle system, allowing you to intuitively understand concepts like **uncertainty**, **hallucination**, and **Bayesian filtering**.
 
-## React Compiler
+## 🎮 Interactive Demo
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The simulation visualizes a **Particle Filter** (Sequential Monte Carlo) running in real-time:
 
-## Expanding the ESLint configuration
+*   **Agents (Particles)**: Represent independent hypotheses about the state of the world.
+*   **The Mouse**: Represents the "Ground Truth" or Sensor Observation.
+*   **The "Wind" (Dynamics Prior)**: Represents the AI's internal prediction of how the world moves (without data).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Key Features
+
+*   **Interactive Controls**: Tweak the fundamental parameters of the AI's brain:
+    *   **Observation Weight**: How much does the AI trust its eyes vs. its imagination?
+    *   **Stochasticity (Noise)**: How "creative" or confused is the AI?
+    *   **Belief Retention (Memory)**: How long does it hold onto past predictions?
+*   **Visual Modes**:
+    *   **Standard**: Ghost trails showing density.
+    *   **Multiverse**: Colors particles by direction, visualizing divergent futures.
+    *   **Error Heatmap**: Turns particles **Green** (accurate) or **Red** (hallucinating) based on distance from reality.
+*   **Narrative HUD**: A dynamic story engine that diagnoses the AI's state (e.g., *"The AI is dreaming"*, *"The AI is dogmatic"*).
+*   **Technical Panel**: View the underlying math (Kalman Filter / ELBO) and the code driving the simulation.
+
+## 🧠 The Science
+
+This demo maps directly to the mathematics of **Variational Inference**:
+
+$$ s_{t+1} \sim p_\theta(s_{t+1} | s_t, a_t) $$
+
+*   **Tracking Mode**: High observation weight. The model collapses its probability cloud to match the sensor data.
+*   **Dreaming Mode**: Low observation weight + High noise. The model ignores the sensor and "hallucinates" a future based on its internal dynamics prior.
+
+## 🛠️ Tech Stack
+
+*   **React 18**: UI and State Management.
+*   **Vite**: Fast build tool.
+*   **HTML5 Canvas**: High-performance 2D particle rendering (10,000+ agents).
+*   **CSS Glassmorphism**: Custom "Sci-Fi HUD" aesthetic.
+
+## 🚀 Getting Started
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/cogspa/world-model-hud.git
+    cd world-model-hud
+    ```
+
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Run the development server**
+    ```bash
+    npm run dev
+    ```
+
+4.  Open `http://localhost:5173` in your browser.
+
+## 📄 License
+
+MIT License. Feel free to use this code for educational purposes or your own research demos.
