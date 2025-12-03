@@ -235,6 +235,26 @@ export default function WorldModelHUD({ state }) {
                             (state?.obsWeight < 0.05) ? "HALLUCINATING" : "UNCERTAIN"}
                     </strong>
                 </div>
+
+                <div style={{ marginTop: 20, textAlign: "center" }}>
+                    <a href="https://worldmodelresearch.com" target="_blank" rel="noopener noreferrer">
+                        <img
+                            src="/wmr-logo.png"
+                            alt="World Model Research"
+                            style={{ width: "100%", maxWidth: 120, opacity: 0.8, transition: "opacity 0.2s" }}
+                            onMouseOver={(e) => e.currentTarget.style.opacity = 1}
+                            onMouseOut={(e) => e.currentTarget.style.opacity = 0.8}
+                        />
+                    </a>
+                    <div style={{
+                        marginTop: 12,
+                        fontSize: "9px",
+                        color: "rgba(255, 255, 255, 0.3)",
+                        letterSpacing: "0.05em"
+                    }}>
+                        Concept Design by Joe Micallef (COGSPA) 2025
+                    </div>
+                </div>
             </div>
 
             {/* Pop-up with full definition */}
