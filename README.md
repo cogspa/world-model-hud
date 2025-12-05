@@ -1,40 +1,67 @@
 # World Model HUD
 
 **An interactive visualization of how AI agents "imagine" the future.**
-
 [![World Model Research](https://img.shields.io/badge/Presented%20by-World%20Model%20Research-2997ff)](https://worldmodelresearch.com)
 
-This project is a visual metaphor for **Neural World Models** (like Dreamer, JEPA, or RSSM). It visualizes the internal "latent state" of an AI as a particle system, allowing you to intuitively understand concepts like **uncertainty**, **hallucination**, and **Bayesian filtering**.
+## World Model HUD 2.0 (New Update)
 
-## 🎮 Interactive Demo
+World Model HUD 2.0 introduces an entirely new visual latent interface that reveals how the AI’s internal belief state evolves over time. While Version 1 focused on particle-based world-model dynamics, Version 2 adds a high-level, animated “mind’s-eye” visualization of the model’s uncertainty, confidence, drift, and regime.
 
-The simulation visualizes a **Particle Filter** (Sequential Monte Carlo) running in real-time:
+This transforms the project from a simple simulation into a conceptual UX exploration of future world-model debugging tools.
 
-*   **Agents (Particles)**: Represent independent hypotheses about the state of the world.
-*   **The Mouse**: Represents the "Ground Truth" or Sensor Observation.
-*   **The "Wind" (Dynamics Prior)**: Represents the AI's internal prediction of how the world moves (without data).
+### 🚀 What’s New in 2.0
 
-### Key Features
+#### 1. Latent Visual Orb (New HUD Layer)
+A full-screen animated orb that summarizes the AI’s latent belief state:
+*   **Orb Radius**: level of confidence
+*   **Glow Radius / Texture**: uncertainty (variance of the particle cloud)
+*   **Color Temperature**: uncertainty → blue (low) → red (high)
+*   **Drift Needle**: direction of latent prediction
+*   **Trails**: temporal smoothing visualizing temporal coherence
 
-*   **Interactive Controls**: Tweak the fundamental parameters of the AI's brain:
-    *   **Observation Weight**: How much does the AI trust its eyes vs. its imagination?
-    *   **Stochasticity (Noise)**: How "creative" or confused is the AI?
-    *   **Belief Retention (Memory)**: How long does it hold onto past predictions?
-*   **Visual Modes**:
-    *   **Standard**: Ghost trails showing density.
-    *   **Multiverse**: Colors particles by direction, visualizing divergent futures.
-    *   **Error Heatmap**: Turns particles **Green** (accurate) or **Red** (hallucinating) based on distance from reality.
-*   **Narrative HUD**: A dynamic story engine that diagnoses the AI's state (e.g., *"The AI is dreaming"*, *"The AI is dogmatic"*).
-*   **Technical Panel**: View the underlying math (Kalman Filter / ELBO) and the code driving the simulation.
+This provides an abstract but intuitive mental model of how a world model “feels” internally.
 
-## 🧠 The Science
+#### 2. True Latent Statistics (Not Fake Heuristics)
+HUD 2.0 uses real statistics extracted from the agent cloud:
+*   `cloudStd`: spread of the particle distribution
+*   `meanErrorToObs`: average deviation from observations
+*   `beliefVx`, `beliefVy`: latent drift vector
+*   `phase`: agent-level uncertainty marker
+*   `obsWeight`: grounding vs imagination
+*   `stochasticity`: internal randomness
 
-This demo maps directly to the mathematics of **Variational Inference**:
+These metrics form the inputs to the latent orb rendering pipeline.
 
-$$ s_{t+1} \sim p_\theta(s_{t+1} | s_t, a_t) $$
+#### 3. New HUD Modes
+Users can cycle between three visualization styles:
+*   **Orb Mode (Default)**: A polished, cinematic representation of the latent state.
+*   **Minimal Mode**: A thin-ring interface with attention-style ticks and small drift indicators.
+*   **Wireframe Mode**: A more technical concentric-ring view reminiscent of Kalman covariance ellipses.
 
-*   **Tracking Mode**: High observation weight. The model collapses its probability cloud to match the sensor data.
-*   **Dreaming Mode**: Low observation weight + High noise. The model ignores the sensor and "hallucinates" a future based on its internal dynamics prior.
+These modes reflect different potential UX paradigms for world model inspection.
+
+#### 4. Regime Display (System-Level State)
+HUD 2.0 infers and displays the current behavior regime:
+*   **LOCKED** — strong grounding, stable predictions
+*   **HALLUCINATING** — low observation weight, drifting from reality
+*   **UNCERTAIN** — high noise or spread
+*   **BALANCED** — good blend of prediction + observation
+
+These regime labels visually diagnose the system at a glance.
+
+#### 5. Fully Integrated Into Existing UI
+The orb sits between the simulation and the textual HUD:
+`WorldModelSimulation → LatentHUD → WorldModelHUD → Story HUD`
+
+This layering mirrors how future AI tools may combine:
+*   Full-state visualization
+*   Latent-space abstraction
+*   Symbolic/textual metrics
+*   Narrative or natural language explanation
+
+HUD 2.0 represents the “middle layer” of this stack.
+
+---
 
 ## 🛠️ Tech Stack
 

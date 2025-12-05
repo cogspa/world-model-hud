@@ -140,6 +140,13 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
             ctx.fillStyle = `rgba(10,12,14,${1 - currentParams.memory})`;
             ctx.fillRect(0, 0, W, H);
 
+            // Aggregate stats for HUD (World Model HUD 2.0)
+            let sumX = 0;
+            let sumY = 0;
+            let sumX2 = 0;
+            let sumY2 = 0;
+            let sumDistToObs = 0;
+
             // (b) Observation visualization
             const obsGrad = ctx.createRadialGradient(obs.x, obs.y, 4, obs.x, obs.y, 120);
             obsGrad.addColorStop(0, `rgba(180,200,255,0.05)`);
@@ -208,6 +215,13 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
                 const dy = obs.y - a.y;
                 const dist = Math.hypot(dx, dy) + 1e-5;
 
+                // Accumulate for cloud stats
+                sumX += a.x;
+                sumY += a.y;
+                sumX2 += a.x * a.x;
+                sumY2 += a.y * a.y;
+                sumDistToObs += dist;
+
                 // "Kalman gain" equivalent
                 const K = currentParams.obsWeight * (obs.active ? 1.8 : 0.8);
                 const obsX = (dx / dist) * K;
@@ -275,9 +289,18 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
                 drawBatch(batches.standard, 'rgba(210, 225, 245, 0.08)');
             }
 
-            // Update HUD with Probe Data
-            if (onUpdateHUD) {
+            // Update HUD with Probe + Cloud Stats
+            if (onUpdateHUD && agents.length > 0) {
                 const speed = Math.sqrt(probeAgent.vx ** 2 + probeAgent.vy ** 2);
+
+                const N = agents.length;
+                const meanX = sumX / N;
+                const meanY = sumY / N;
+                const varX = sumX2 / N - meanX * meanX;
+                const varY = sumY2 / N - meanY * meanY;
+                const cloudStd = Math.sqrt(Math.max(varX, 0) + Math.max(varY, 0)); // radial std
+                const meanErrorToObs = sumDistToObs / N;
+
                 onUpdateHUD({
                     probeIndex: probeAgent.index,
                     latentX: probeAgent.x,
@@ -286,12 +309,20 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
                     beliefVy: probeAgent.vy,
                     speedNorm: speed,
                     phase: probeAgent.phase,
+
                     obsX: obs.x,
                     obsY: obs.y,
                     obsActive: obs.active,
+
                     beliefRetention: currentParams.memory,
                     stochasticity: currentParams.noise,
                     obsWeight: currentParams.obsWeight,
+
+                    // New: cloud-level stats for WM HUD 2.0
+                    cloudCenterX: meanX,
+                    cloudCenterY: meanY,
+                    cloudStd,          // spread of the particle cloud
+                    meanErrorToObs,    // avg distance to observation
                 });
             }
 

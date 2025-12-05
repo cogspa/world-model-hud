@@ -47,6 +47,7 @@ src/
     react.svg
   components/
     IntroOverlay.jsx
+    LatentHUD.jsx
     SplatScene.jsx
     TechnicalPanel.jsx
     TrailOverlay.jsx
@@ -69,6 +70,298 @@ vite.config.js
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="src/components/LatentHUD.jsx">
+import React, { useRef, useEffect, useState } from "react";
+
+function clamp(v, a, b) {
+    return Math.max(a, Math.min(b, v));
+}
+
+function lerp(a, b, t) {
+    return a + (b - a) * t;
+}
+
+/**
+ * World Model HUD 2.0 – Visual Latent Orb
+ *
+ * Props:
+ *   state: hudState from WorldModelSimulation
+ *   params: world-model params (obsWeight, noise, memory, etc.)
+ */
+export default function LatentHUD({ state, params }) {
+    const canvasRef = useRef(null);
+    const animRef = useRef(null);
+    const metricsRef = useRef({
+        variance: 0.2,
+        confidence: 0.8,
+        driftX: 0,
+        driftY: 0,
+        regime: "BALANCED",
+    });
+
+    const [mode, setMode] = useState("orb"); // 'orb' | 'minimal' | 'wire'
+
+    // Update metricsRef whenever state/params change
+    useEffect(() => {
+        if (!state) return;
+
+        const {
+            cloudStd = 0,
+            meanErrorToObs = 0,
+            beliefVx = 0,
+            beliefVy = 0,
+            stochasticity = params?.noise ?? 1.0,
+            obsWeight = params?.obsWeight ?? 0.08,
+        } = state;
+
+        // Heuristic normalization (works well across common screen sizes)
+        const normSpread = clamp(cloudStd / 400, 0, 1);        // 0..1
+        const normError = clamp(meanErrorToObs / 300, 0, 1);   // 0..1
+
+        const variance = clamp(0.15 + 0.85 * normSpread, 0, 1);
+        const confidence = clamp(1 - 0.7 * normError, 0, 1);
+
+        let regime = "BALANCED";
+        if (obsWeight < 0.04) regime = "HALLUCINATING";
+        else if (stochasticity > 1.6) regime = "UNCERTAIN";
+        else if (obsWeight > 0.2 && stochasticity < 1.2) regime = "LOCKED";
+
+        metricsRef.current = {
+            variance,
+            confidence,
+            driftX: beliefVx,
+            driftY: beliefVy,
+            regime,
+        };
+    }, [state, params]);
+
+    // Canvas draw loop
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const ctx = canvas.getContext("2d", { alpha: false });
+
+        let DPR = window.devicePixelRatio || 1;
+        let W = (canvas.width = Math.floor(window.innerWidth * DPR));
+        let H = (canvas.height = Math.floor(window.innerHeight * DPR));
+
+        const resize = () => {
+            DPR = window.devicePixelRatio || 1;
+            W = canvas.width = Math.floor(window.innerWidth * DPR);
+            H = canvas.height = Math.floor(window.innerHeight * DPR);
+        };
+
+        window.addEventListener("resize", resize);
+
+        const draw = () => {
+            const { variance, confidence, driftX, driftY, regime } =
+                metricsRef.current;
+
+            // Clear canvas fully every frame to ensure visibility of simulation below.
+            ctx.clearRect(0, 0, W, H);
+
+            const centerX = W * 0.5;
+            const centerY = H * 0.5;
+
+            // Map variance to color (blue -> purple -> red)
+            const h = lerp(220, 0, Math.pow(variance, 0.85));
+            const s = 75;
+            const l = 52;
+
+            const baseRadius = 20 * (W / 1280);
+            const r = baseRadius + 60 * confidence;
+            const sigma = 10 + 50 * variance;
+
+            ctx.save();
+            ctx.translate(centerX, centerY);
+
+            if (mode === "orb") {
+                // Glow
+                const grd = ctx.createRadialGradient(
+                    0,
+                    0,
+                    r * 0.4,
+                    0,
+                    0,
+                    r + sigma
+                );
+                grd.addColorStop(0, `hsla(${h},${s}%,${l}%,0.22)`);
+                grd.addColorStop(1, `hsla(${h},${s}%,${l}%,0)`);
+                ctx.fillStyle = grd;
+                ctx.beginPath();
+                ctx.arc(0, 0, r + sigma, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Core
+                ctx.fillStyle = `hsl(${h},${s}%,${Math.max(l - 8, 30)}%)`;
+                ctx.beginPath();
+                ctx.arc(0, 0, r, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Thin outline
+                ctx.strokeStyle = `hsla(${h},${s}%,90%,0.9)`;
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.arc(0, 0, r, 0, Math.PI * 2);
+                ctx.stroke();
+            } else if (mode === "minimal") {
+                // Just a ring + ticks
+                ctx.strokeStyle = `hsla(${h},${s}%,80%,0.8)`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(0, 0, r, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Confidence notch
+                ctx.save();
+                ctx.rotate(-Math.PI / 2);
+                const notchAngle = lerp(0.1, Math.PI * 1.2, confidence);
+                ctx.strokeStyle = `hsla(${h},${s}%,90%,1)`;
+                ctx.beginPath();
+                ctx.arc(0, 0, r + 6, 0, notchAngle);
+                ctx.stroke();
+                ctx.restore();
+            } else if (mode === "wire") {
+                // Wireframe style: concentric rings based on variance
+                const rings = 4;
+                for (let i = 1; i <= rings; i++) {
+                    const rr = r * (i / rings);
+                    ctx.strokeStyle = `hsla(${h},${s}%,${40 + i * 8}%,0.6)`;
+                    ctx.lineWidth = i === rings ? 1.5 : 0.8;
+                    ctx.beginPath();
+                    ctx.arc(0, 0, rr, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+
+            // Drift vector (for all modes)
+            const driftMag = Math.hypot(driftX, driftY);
+            if (driftMag > 0.0005) {
+                const ang = Math.atan2(driftY, driftX);
+                const len = r * (mode === "minimal" ? 1.1 : 1.3);
+                ctx.strokeStyle = `hsla(${h},${s}%,92%,0.95)`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(Math.cos(ang) * len, Math.sin(ang) * len);
+                ctx.stroke();
+
+                // Tip
+                ctx.beginPath();
+                ctx.arc(
+                    Math.cos(ang) * len,
+                    Math.sin(ang) * len,
+                    3.5,
+                    0,
+                    Math.PI * 2
+                );
+                ctx.fillStyle = `hsla(${h},${s}%,95%,0.95)`;
+                ctx.fill();
+            }
+
+            ctx.restore();
+
+            // Regime label in corner
+            ctx.font = `${12 * (W / 1280)}px system-ui, -apple-system, sans-serif`;
+            ctx.textAlign = "right";
+            const regimeColor =
+                regime === "LOCKED"
+                    ? "#4ade80"
+                    : regime === "HALLUCINATING"
+                        ? "#f87171"
+                        : regime === "UNCERTAIN"
+                            ? "#fbbf24"
+                            : "#e5e7eb";
+            ctx.fillStyle = "rgba(15,23,42,0.9)";
+            const pad = 12 * (W / 1280);
+            const boxW = 180 * (W / 1280);
+            const boxH = 26 * (W / 1280);
+            const bx = W - pad - boxW;
+            const by = pad;
+
+            ctx.beginPath();
+            ctx.roundRect(bx, by, boxW, boxH, 6 * (W / 1280));
+            ctx.fill();
+            ctx.strokeStyle = "rgba(148,163,184,0.4)";
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.fillStyle = "#94a3b8";
+            ctx.fillText("Regime:", bx + boxW - pad - 80 * (W / 1280), by + boxH * 0.68);
+
+            ctx.fillStyle = regimeColor;
+            ctx.fillText(regime, bx + boxW - pad, by + boxH * 0.68);
+
+            animRef.current = requestAnimationFrame(draw);
+        };
+
+        // Initial clear & start
+        ctx.clearRect(0, 0, W, H); // Start transparent!
+        draw();
+
+        return () => {
+            cancelAnimationFrame(animRef.current);
+            window.removeEventListener("resize", resize);
+        };
+    }, [mode]);
+
+    return (
+        <>
+            {/* Visual Orb HUD */}
+            <canvas
+                ref={canvasRef}
+                style={{
+                    position: "fixed",
+                    inset: 0,
+                    width: "100vw",
+                    height: "100vh",
+                    pointerEvents: "none",
+                    zIndex: 5, // below text HUD (10), above simulation (0)
+                }}
+            />
+
+            {/* Tiny mode toggle (clickable) */}
+            <div
+                style={{
+                    position: "fixed",
+                    right: 24,
+                    bottom: 24,
+                    zIndex: 55,
+                    display: "flex",
+                    gap: 6,
+                    fontFamily: "system-ui, -apple-system, sans-serif",
+                    fontSize: 11,
+                }}
+            >
+                {["orb", "minimal", "wire"].map((m) => (
+                    <button
+                        key={m}
+                        onClick={() => setMode(m)}
+                        style={{
+                            padding: "4px 8px",
+                            borderRadius: 999,
+                            border: "1px solid rgba(148,163,184,0.5)",
+                            background:
+                                mode === m
+                                    ? "rgba(15,23,42,0.95)"
+                                    : "rgba(15,23,42,0.6)",
+                            color: mode === m ? "#e5e7eb" : "#9ca3af",
+                            cursor: "pointer",
+                            pointerEvents: "auto",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.08em",
+                        }}
+                    >
+                        {m}
+                    </button>
+                ))}
+            </div>
+        </>
+    );
+}
+</file>
 
 <file path="public/vite.svg">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="31.88" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 257"><defs><linearGradient id="IconifyId1813088fe1fbc01fb466" x1="-.828%" x2="57.636%" y1="7.652%" y2="78.411%"><stop offset="0%" stop-color="#41D1FF"></stop><stop offset="100%" stop-color="#BD34FE"></stop></linearGradient><linearGradient id="IconifyId1813088fe1fbc01fb467" x1="43.376%" x2="50.316%" y1="2.242%" y2="89.03%"><stop offset="0%" stop-color="#FFEA83"></stop><stop offset="8.333%" stop-color="#FFDD35"></stop><stop offset="100%" stop-color="#FFA800"></stop></linearGradient></defs><path fill="url(#IconifyId1813088fe1fbc01fb466)" d="M255.153 37.938L134.897 252.976c-2.483 4.44-8.862 4.466-11.382.048L.875 37.958c-2.746-4.814 1.371-10.646 6.827-9.67l120.385 21.517a6.537 6.537 0 0 0 2.322-.004l117.867-21.483c5.438-.991 9.574 4.796 6.877 9.62Z"></path><path fill="url(#IconifyId1813088fe1fbc01fb467)" d="M185.432.063L96.44 17.501a3.268 3.268 0 0 0-2.634 3.014l-5.474 92.456a3.268 3.268 0 0 0 3.997 3.378l24.777-5.718c2.318-.535 4.413 1.507 3.936 3.838l-7.361 36.047c-.495 2.426 1.782 4.5 4.151 3.78l15.304-4.649c2.372-.72 4.652 1.36 4.15 3.788l-11.698 56.621c-.732 3.542 3.979 5.473 5.943 2.437l1.313-2.028l72.516-144.72c1.215-2.423-.88-5.186-3.54-4.672l-25.505 4.922c-2.396.462-4.435-1.77-3.759-4.114l16.646-57.705c.677-2.35-1.37-4.583-3.769-4.113Z"></path></svg>
@@ -539,6 +832,13 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
             ctx.fillStyle = `rgba(10,12,14,${1 - currentParams.memory})`;
             ctx.fillRect(0, 0, W, H);
 
+            // Aggregate stats for HUD (World Model HUD 2.0)
+            let sumX = 0;
+            let sumY = 0;
+            let sumX2 = 0;
+            let sumY2 = 0;
+            let sumDistToObs = 0;
+
             // (b) Observation visualization
             const obsGrad = ctx.createRadialGradient(obs.x, obs.y, 4, obs.x, obs.y, 120);
             obsGrad.addColorStop(0, `rgba(180,200,255,0.05)`);
@@ -607,6 +907,13 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
                 const dy = obs.y - a.y;
                 const dist = Math.hypot(dx, dy) + 1e-5;
 
+                // Accumulate for cloud stats
+                sumX += a.x;
+                sumY += a.y;
+                sumX2 += a.x * a.x;
+                sumY2 += a.y * a.y;
+                sumDistToObs += dist;
+
                 // "Kalman gain" equivalent
                 const K = currentParams.obsWeight * (obs.active ? 1.8 : 0.8);
                 const obsX = (dx / dist) * K;
@@ -674,9 +981,18 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
                 drawBatch(batches.standard, 'rgba(210, 225, 245, 0.08)');
             }
 
-            // Update HUD with Probe Data
-            if (onUpdateHUD) {
+            // Update HUD with Probe + Cloud Stats
+            if (onUpdateHUD && agents.length > 0) {
                 const speed = Math.sqrt(probeAgent.vx ** 2 + probeAgent.vy ** 2);
+
+                const N = agents.length;
+                const meanX = sumX / N;
+                const meanY = sumY / N;
+                const varX = sumX2 / N - meanX * meanX;
+                const varY = sumY2 / N - meanY * meanY;
+                const cloudStd = Math.sqrt(Math.max(varX, 0) + Math.max(varY, 0)); // radial std
+                const meanErrorToObs = sumDistToObs / N;
+
                 onUpdateHUD({
                     probeIndex: probeAgent.index,
                     latentX: probeAgent.x,
@@ -685,12 +1001,20 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
                     beliefVy: probeAgent.vy,
                     speedNorm: speed,
                     phase: probeAgent.phase,
+
                     obsX: obs.x,
                     obsY: obs.y,
                     obsActive: obs.active,
+
                     beliefRetention: currentParams.memory,
                     stochasticity: currentParams.noise,
                     obsWeight: currentParams.obsWeight,
+
+                    // New: cloud-level stats for WM HUD 2.0
+                    cloudCenterX: meanX,
+                    cloudCenterY: meanY,
+                    cloudStd,          // spread of the particle cloud
+                    meanErrorToObs,    // avg distance to observation
                 });
             }
 
@@ -860,6 +1184,7 @@ export default function WorldModelStory({ params }) {
 import React, { useState } from "react";
 import WorldModelSimulation from "./components/WorldModelSimulation.jsx";
 import WorldModelHUD from "./components/WorldModelHUD.jsx";
+import LatentHUD from "./components/LatentHUD.jsx";
 import WorldModelControls from "./components/WorldModelControls.jsx";
 import WorldModelStory from "./components/WorldModelStory.jsx";
 import TechnicalPanel from "./components/TechnicalPanel.jsx";
@@ -898,6 +1223,7 @@ const App = () => {
       />
 
       {/* HUD overlays on top of the canvas */}
+      <LatentHUD state={hudState} params={params} />
       <WorldModelHUD state={hudState} />
 
       {/* Story HUD (Bottom Center) */}
@@ -2047,40 +2373,67 @@ export default function WorldModelHUD({ state }) {
 # World Model HUD
 
 **An interactive visualization of how AI agents "imagine" the future.**
-
 [![World Model Research](https://img.shields.io/badge/Presented%20by-World%20Model%20Research-2997ff)](https://worldmodelresearch.com)
 
-This project is a visual metaphor for **Neural World Models** (like Dreamer, JEPA, or RSSM). It visualizes the internal "latent state" of an AI as a particle system, allowing you to intuitively understand concepts like **uncertainty**, **hallucination**, and **Bayesian filtering**.
+## World Model HUD 2.0 (New Update)
 
-## 🎮 Interactive Demo
+World Model HUD 2.0 introduces an entirely new visual latent interface that reveals how the AI’s internal belief state evolves over time. While Version 1 focused on particle-based world-model dynamics, Version 2 adds a high-level, animated “mind’s-eye” visualization of the model’s uncertainty, confidence, drift, and regime.
 
-The simulation visualizes a **Particle Filter** (Sequential Monte Carlo) running in real-time:
+This transforms the project from a simple simulation into a conceptual UX exploration of future world-model debugging tools.
 
-*   **Agents (Particles)**: Represent independent hypotheses about the state of the world.
-*   **The Mouse**: Represents the "Ground Truth" or Sensor Observation.
-*   **The "Wind" (Dynamics Prior)**: Represents the AI's internal prediction of how the world moves (without data).
+### 🚀 What’s New in 2.0
 
-### Key Features
+#### 1. Latent Visual Orb (New HUD Layer)
+A full-screen animated orb that summarizes the AI’s latent belief state:
+*   **Orb Radius**: level of confidence
+*   **Glow Radius / Texture**: uncertainty (variance of the particle cloud)
+*   **Color Temperature**: uncertainty → blue (low) → red (high)
+*   **Drift Needle**: direction of latent prediction
+*   **Trails**: temporal smoothing visualizing temporal coherence
 
-*   **Interactive Controls**: Tweak the fundamental parameters of the AI's brain:
-    *   **Observation Weight**: How much does the AI trust its eyes vs. its imagination?
-    *   **Stochasticity (Noise)**: How "creative" or confused is the AI?
-    *   **Belief Retention (Memory)**: How long does it hold onto past predictions?
-*   **Visual Modes**:
-    *   **Standard**: Ghost trails showing density.
-    *   **Multiverse**: Colors particles by direction, visualizing divergent futures.
-    *   **Error Heatmap**: Turns particles **Green** (accurate) or **Red** (hallucinating) based on distance from reality.
-*   **Narrative HUD**: A dynamic story engine that diagnoses the AI's state (e.g., *"The AI is dreaming"*, *"The AI is dogmatic"*).
-*   **Technical Panel**: View the underlying math (Kalman Filter / ELBO) and the code driving the simulation.
+This provides an abstract but intuitive mental model of how a world model “feels” internally.
 
-## 🧠 The Science
+#### 2. True Latent Statistics (Not Fake Heuristics)
+HUD 2.0 uses real statistics extracted from the agent cloud:
+*   `cloudStd`: spread of the particle distribution
+*   `meanErrorToObs`: average deviation from observations
+*   `beliefVx`, `beliefVy`: latent drift vector
+*   `phase`: agent-level uncertainty marker
+*   `obsWeight`: grounding vs imagination
+*   `stochasticity`: internal randomness
 
-This demo maps directly to the mathematics of **Variational Inference**:
+These metrics form the inputs to the latent orb rendering pipeline.
 
-$$ s_{t+1} \sim p_\theta(s_{t+1} | s_t, a_t) $$
+#### 3. New HUD Modes
+Users can cycle between three visualization styles:
+*   **Orb Mode (Default)**: A polished, cinematic representation of the latent state.
+*   **Minimal Mode**: A thin-ring interface with attention-style ticks and small drift indicators.
+*   **Wireframe Mode**: A more technical concentric-ring view reminiscent of Kalman covariance ellipses.
 
-*   **Tracking Mode**: High observation weight. The model collapses its probability cloud to match the sensor data.
-*   **Dreaming Mode**: Low observation weight + High noise. The model ignores the sensor and "hallucinates" a future based on its internal dynamics prior.
+These modes reflect different potential UX paradigms for world model inspection.
+
+#### 4. Regime Display (System-Level State)
+HUD 2.0 infers and displays the current behavior regime:
+*   **LOCKED** — strong grounding, stable predictions
+*   **HALLUCINATING** — low observation weight, drifting from reality
+*   **UNCERTAIN** — high noise or spread
+*   **BALANCED** — good blend of prediction + observation
+
+These regime labels visually diagnose the system at a glance.
+
+#### 5. Fully Integrated Into Existing UI
+The orb sits between the simulation and the textual HUD:
+`WorldModelSimulation → LatentHUD → WorldModelHUD → Story HUD`
+
+This layering mirrors how future AI tools may combine:
+*   Full-state visualization
+*   Latent-space abstraction
+*   Symbolic/textual metrics
+*   Narrative or natural language explanation
+
+HUD 2.0 represents the “middle layer” of this stack.
+
+---
 
 ## 🛠️ Tech Stack
 

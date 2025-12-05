@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import WorldModelSimulation from "./components/WorldModelSimulation.jsx";
 import WorldModelHUD from "./components/WorldModelHUD.jsx";
+import LatentControls from "./components/LatentControls.jsx";
+import LatentHUD from "./components/LatentHUD.jsx";
 import WorldModelControls from "./components/WorldModelControls.jsx";
 import WorldModelStory from "./components/WorldModelStory.jsx";
 import TechnicalPanel from "./components/TechnicalPanel.jsx";
@@ -11,6 +13,8 @@ const App = () => {
   const [agentCount, setAgentCount] = useState(0);
   const [showIntro, setShowIntro] = useState(true);
   const [showTech, setShowTech] = useState(false);
+
+  // World Model Physics Params
   const [params, setParams] = useState({
     agentCount: 4000,
     spread: 1.0,
@@ -19,6 +23,13 @@ const App = () => {
     obsWeight: 0.08,
     visualMode: "standard", // standard, velocity, error
     showPrior: false,
+  });
+
+  // Visual Rendering Params (The "Game Feel" of the Orb)
+  const [latentParams, setLatentParams] = useState({
+    varianceGain: 1.0,
+    confidenceSmooth: 0.12,
+    trailLength: 0.08 // Lower default for better visibility
   });
 
   return (
@@ -30,7 +41,7 @@ const App = () => {
         onAgentCountChange={setAgentCount}
       />
 
-      {/* Controls */}
+      {/* Control Panels */}
       <WorldModelControls
         params={params}
         setParams={setParams}
@@ -38,7 +49,13 @@ const App = () => {
         onToggleTech={() => setShowTech(!showTech)}
       />
 
+      <LatentControls
+        params={latentParams}
+        setParams={setLatentParams}
+      />
+
       {/* HUD overlays on top of the canvas */}
+      <LatentHUD state={hudState} params={params} visualParams={latentParams} />
       <WorldModelHUD state={hudState} />
 
       {/* Story HUD (Bottom Center) */}
