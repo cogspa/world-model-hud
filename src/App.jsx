@@ -101,6 +101,42 @@ const App = () => {
         setParams={setLatentParams}
       />
 
+      {/* Critical Alert Overlay */}
+      {hudState && hudState.meanErrorToObs > 220 && (
+        <div style={{
+          position: 'absolute',
+          top: '15%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          textAlign: 'center',
+          pointerEvents: 'none',
+          zIndex: 100
+        }}>
+          <div style={{
+            color: '#ef4444',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            letterSpacing: '0.2em',
+            background: 'rgba(0,0,0,0.6)',
+            padding: '8px 16px',
+            borderRadius: '4px',
+            border: '1px solid #ef4444',
+            animation: 'pulse 0.2s infinite' // Fast flicker
+          }}>
+            ⚠ BELIEF TELEPORT
+          </div>
+          <div style={{
+            color: '#fca5a5',
+            fontSize: '11px',
+            marginTop: '4px',
+            letterSpacing: '0.1em',
+            textShadow: '0 0 10px #ef4444'
+          }}>
+            PHYSICS ABANDONED
+          </div>
+        </div>
+      )}
+
       {/* HUD overlays on top of the canvas */}
       <LatentHUD state={hudState} params={params} visualParams={latentParams} />
       <WorldModelHUD state={hudState} />

@@ -107,7 +107,7 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
                 const lastOb = userObstaclesRef.current[userObstaclesRef.current.length - 1];
                 const dist = lastOb ? Math.hypot(lastOb.x - clientX, lastOb.y - clientY) : 999;
 
-                if (dist > 30) { // Spacing check
+                if (dist > 25) { // Spacing check
                     userObstaclesRef.current.push({
                         x: clientX,
                         y: clientY,
@@ -191,30 +191,31 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
 
                 ctx.save();
                 ctx.translate(o.x, o.y);
-                ctx.rotate(o.angle + t); // Rotate slowly
+                // ctx.rotate(o.angle + t); // Removed rotation for static wall feel
 
-                // Outer Dashed Ring
+                // Outer Dashed Box
+                const size = o.radius * 2;
                 ctx.strokeStyle = `rgba(255, 100, 100, ${o.life * 0.5})`;
                 ctx.setLineDash([5, 5]);
                 ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.arc(0, 0, o.radius * o.life, 0, Math.PI * 2);
+                ctx.rect(-size / 2, -size / 2, size, size); // Draw centered square
                 ctx.stroke();
 
                 // Inner Void Fill
-                ctx.fillStyle = `rgba(20, 0, 0, ${o.life * 0.8})`; // Dark void
+                ctx.fillStyle = `rgba(20, 0, 0, ${o.life * 0.9})`; // Darker void
                 ctx.beginPath();
-                ctx.arc(0, 0, o.radius * o.life * 0.85, 0, Math.PI * 2);
+                ctx.rect(-(size * 0.85) / 2, -(size * 0.85) / 2, size * 0.85, size * 0.85);
                 ctx.fill();
 
                 // Crosshair / X
                 ctx.strokeStyle = `rgba(255, 50, 50, ${o.life * 0.3})`;
                 ctx.setLineDash([]);
                 ctx.beginPath();
-                ctx.moveTo(-o.radius * 0.4, -o.radius * 0.4);
-                ctx.lineTo(o.radius * 0.4, o.radius * 0.4);
-                ctx.moveTo(o.radius * 0.4, -o.radius * 0.4);
-                ctx.lineTo(-o.radius * 0.4, o.radius * 0.4);
+                ctx.moveTo(-size * 0.3, -size * 0.3);
+                ctx.lineTo(size * 0.3, size * 0.3);
+                ctx.moveTo(size * 0.3, -size * 0.3);
+                ctx.lineTo(-size * 0.3, size * 0.3);
                 ctx.stroke();
 
                 ctx.restore();

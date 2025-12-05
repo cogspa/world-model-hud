@@ -121,6 +121,16 @@ export default function LatentControls({ params, setParams }) {
                             </div>
 
                             <div style={{ marginBottom: 20 }}>
+                                <h3 style={{ fontSize: 14, color: '#fff', margin: '0 0 8px 0' }}>The Walls (Visual Constraints)</h3>
+                                <p style={{ fontSize: 13, margin: 0 }}>
+                                    The <strong>Squares</strong> represent hard physical limits. The agents (internal thoughts) <em>cannot</em> pass through them.
+                                </p>
+                                <p style={{ fontSize: 13, marginTop: 8, color: '#94a3b8' }}>
+                                    If the Orb <strong>"Leaps"</strong> over a wall, it means <strong>Observation (Reality)</strong> has overridden the <strong>Prediction (Physics)</strong>. The model realized it was wrong and teleported its belief to catch up.
+                                </p>
+                            </div>
+
+                            <div style={{ marginBottom: 20 }}>
                                 <h3 style={{ fontSize: 14, color: '#fff', margin: '0 0 8px 0' }}>Color = Variance ($\sigma^2$)</h3>
                                 <div style={{ display: 'grid', gridTemplateColumns: '12px auto', gap: 10, fontSize: 12, alignItems: 'center', marginBottom: 4 }}>
                                     <div style={{ width: 12, height: 12, borderRadius: '50%', background: 'hsl(220, 80%, 50%)' }}></div>
