@@ -32,6 +32,49 @@ const App = () => {
     trailLength: 0.08 // Lower default for better visibility
   });
 
+  // Data Recording & Scoring
+  const [isRecording, setIsRecording] = useState(false);
+  const [score, setScore] = useState(0);
+  const recordedData = React.useRef([]);
+
+  // Monitor HUD state for recording & scoring
+  React.useEffect(() => {
+    if (!hudState) return;
+
+    // 1. Update Score (Simple inverse error accumulation)
+    // If error is 0, score + 1. If error is high, score + small amount.
+    const accuracy = 1 / (1 + (hudState.meanErrorToObs / 100));
+    setScore(prev => prev + accuracy);
+
+    // 2. Record Data
+    if (isRecording) {
+      // Flatten data for easier CSV/JSON analysis later
+      recordedData.current.push({
+        timestamp: Date.now(),
+        ...hudState
+      });
+    }
+  }, [hudState, isRecording]);
+
+  const handleToggleRecord = () => {
+    if (isRecording) {
+      // Stop & Save
+      setIsRecording(false);
+      const blob = new Blob([JSON.stringify(recordedData.current, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `world_model_session_${Date.now()}.json`;
+      a.click();
+      recordedData.current = []; // Clear buffer
+    } else {
+      // Start
+      recordedData.current = [];
+      setIsRecording(true);
+      setScore(0); // Reset score on new session
+    }
+  };
+
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative", overflow: "hidden", background: "#0a0c0e" }}>
       {/* The 2D Simulation Canvas */}
@@ -47,6 +90,10 @@ const App = () => {
         setParams={setParams}
         agentCount={agentCount}
         onToggleTech={() => setShowTech(!showTech)}
+        // Data Recording Props
+        isRecording={isRecording}
+        onToggleRecord={handleToggleRecord}
+        score={score}
       />
 
       <LatentControls

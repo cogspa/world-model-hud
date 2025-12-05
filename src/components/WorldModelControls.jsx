@@ -4,7 +4,10 @@ export default function WorldModelControls({
     params,
     setParams,
     agentCount,
-    onToggleTech
+    onToggleTech,
+    isRecording,
+    onToggleRecord,
+    score
 }) {
     const handleChange = (key, value) => {
         let newValue = value;
@@ -15,12 +18,61 @@ export default function WorldModelControls({
     };
 
     return (
-        <div className="wm-controls glass-panel">
-            <div className="wm-controls-title">
-                <a href="https://worldmodelresearch.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
-                    World Model Research
-                </a>
+        <div className="glass-panel" style={{
+            position: 'fixed',
+            top: 20,
+            left: 20,
+            zIndex: 50,
+            width: 300,
+            padding: 16,
+            fontFamily: 'system-ui, sans-serif'
+        }}>
+            {/* Header with Title and Rec Button */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <div>
+                    <span style={{ fontSize: 13, color: '#94a3b8', letterSpacing: '0.05em' }}>WORLD MODEL HUD</span>
+                    <div style={{ fontSize: 18, fontWeight: 600, color: '#e2e8f0' }}>System Status</div>
+                </div>
+
+                <button
+                    onClick={onToggleRecord}
+                    style={{
+                        display: 'flex', alignItems: 'center', gap: 6,
+                        padding: '4px 10px',
+                        background: isRecording ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255,255,255,0.05)',
+                        border: `1px solid ${isRecording ? 'rgba(239, 68, 68, 0.5)' : 'rgba(255,255,255,0.1)'}`,
+                        borderRadius: 16,
+                        color: isRecording ? '#f87171' : '#94a3b8',
+                        cursor: 'pointer',
+                        fontSize: 11
+                    }}
+                >
+                    <div style={{
+                        width: 8, height: 8, borderRadius: '50%',
+                        background: isRecording ? '#ef4444' : '#64748b',
+                        boxShadow: isRecording ? '0 0 8px #ef4444' : 'none',
+                        animation: isRecording ? 'pulse 1s infinite' : 'none'
+                    }} />
+                    {isRecording ? 'REC' : 'DATA'}
+                </button>
             </div>
+
+            {/* Score Display */}
+            <div style={{
+                marginBottom: 16,
+                padding: 8,
+                background: 'rgba(0,0,0,0.3)',
+                borderRadius: 4,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'baseline'
+            }}>
+                <span style={{ fontSize: 11, color: '#64748b' }}>MODEL SCORE</span>
+                <span style={{ fontSize: 16, color: '#10b981', fontFamily: 'monospace' }}>
+                    {Math.floor(score).toLocaleString()}
+                </span>
+            </div>
+
             <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginBottom: '16px', letterSpacing: '0.05em' }}>
                 INTERACTIVE DEMO
             </div>

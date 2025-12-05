@@ -24,12 +24,32 @@ function vnoise(x, y) {
     return i1 + (i2 - i1) * smooth(yf);
 }
 
+// -----------------------------------------------------------
+// Terrain / Map Logic
+// -----------------------------------------------------------
+const getTerrainHeight = (x, y, time) => {
+    // Base procedural noise (shifting map)
+    const scale = 0.003;
+    const v = vnoise(x * scale + time * 0.2, y * scale + time * 0.1);
+
+    // "Islands" structure: smooth noise mapped to 0..1
+    return v;
+};
+
+const gradient = (x, y, time, dist = 1) => {
+    const h0 = getTerrainHeight(x, y, time);
+    const hx = getTerrainHeight(x + dist, y, time);
+    const hy = getTerrainHeight(x, y + dist, time);
+    return { dx: hx - h0, dy: hy - h0 };
+};
+
 export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCountChange }) {
     const canvasRef = useRef(null);
-
-    // Use a ref to keep track of params inside the animation loop
-    // without causing the effect to re-run and reset the simulation.
     const paramsRef = useRef(params);
+    // User modifications (Click to add walls)
+    // We store simple circular obstacles
+    const userObstaclesRef = useRef([]);
+
     useEffect(() => {
         paramsRef.current = params;
     }, [params]);
@@ -45,21 +65,12 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
         let W = (canvas.width = window.innerWidth);
         let H = (canvas.height = window.innerHeight);
 
-        // -----------------------------------------------------------
-        // Agents Setup (Re-run when count/spread changes)
-        // -----------------------------------------------------------
-        // We use a mutable array ref so we don't need to re-bind the render loop
-        // but we do need to re-populate it.
-
         const initAgents = () => {
             const N = paramsRef.current.agentCount || 4000;
             const spread = paramsRef.current.spread || 1.0;
 
             if (onAgentCountChange) onAgentCountChange(N);
 
-            // Calculate spawn bounds based on spread
-            // spread=1.0 -> full screen
-            // spread=0.1 -> small center box
             const marginX = (W * (1 - spread)) / 2;
             const marginY = (H * (1 - spread)) / 2;
             const spawnW = W * spread;
@@ -76,22 +87,10 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
         };
 
         let agents = initAgents();
-
-        // Check if we need to re-init (simple polling in render loop or effect dependency?)
-        // Effect dependency is cleaner for initialization.
-        // But we want to avoid re-attaching event listeners.
-        // Let's just use a separate effect for agents? 
-        // Actually, simpler: just check paramsRef in the loop? 
-        // No, re-allocating 10k objects per frame is bad.
-        // Let's use a "dirty" flag or just compare counts.
-
         let currentCount = agents.length;
         let currentSpread = paramsRef.current.spread;
 
-        // -----------------------------------------------------------
-        // Interaction State
-        // -----------------------------------------------------------
-        let obs = { x: W / 2, y: H / 2, active: false };
+        let obs = { x: W / 2, y: H / 2, active: false, painting: false };
 
         const handleResize = () => {
             W = canvas.width = window.innerWidth;
@@ -101,19 +100,34 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
         const updatePointer = (clientX, clientY) => {
             obs.x = clientX;
             obs.y = clientY;
-        };
 
-        // Event Listeners
-        window.addEventListener('resize', handleResize);
+            // Painting logic: Add obstacle if painting
+            // Only add if far enough from last obstacle to prevent overcrowding
+            if (obs.painting) {
+                const lastOb = userObstaclesRef.current[userObstaclesRef.current.length - 1];
+                const dist = lastOb ? Math.hypot(lastOb.x - clientX, lastOb.y - clientY) : 999;
+
+                if (dist > 30) { // Spacing check
+                    userObstaclesRef.current.push({
+                        x: clientX,
+                        y: clientY,
+                        radius: 25 + Math.random() * 15,
+                        life: 1.0,
+                        angle: Math.random() * Math.PI * 2 // Rotation for visual variety
+                    });
+                }
+            }
+        };
 
         const onMouseMove = (e) => updatePointer(e.clientX, e.clientY);
         const onTouchMove = (e) => {
             if (e.touches[0]) updatePointer(e.touches[0].clientX, e.touches[0].clientY);
             e.preventDefault();
         };
-        const onDown = () => (obs.active = true);
-        const onUp = () => (obs.active = false);
+        const onDown = () => { obs.active = true; obs.painting = true; };
+        const onUp = () => { obs.active = false; obs.painting = false; };
 
+        window.addEventListener('resize', handleResize);
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('touchmove', onTouchMove, { passive: false });
         window.addEventListener('mousedown', onDown);
@@ -121,117 +135,150 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
         window.addEventListener('touchstart', onDown);
         window.addEventListener('touchend', onUp);
 
-        // -----------------------------------------------------------
-        // Animation Loop
-        // -----------------------------------------------------------
         let t = 0;
         const render = () => {
-            t += 0.003;
+            t += 0.005;
             const currentParams = paramsRef.current;
 
-            // Check for Re-init triggers
             if (currentParams.agentCount !== currentCount || currentParams.spread !== currentSpread) {
                 agents = initAgents();
                 currentCount = agents.length;
                 currentSpread = currentParams.spread;
             }
 
-            // (a) Memory decay (trails)
+            // Map Refresh (Clear)
             ctx.fillStyle = `rgba(10,12,14,${1 - currentParams.memory})`;
             ctx.fillRect(0, 0, W, H);
 
-            // Aggregate stats for HUD (World Model HUD 2.0)
-            let sumX = 0;
-            let sumY = 0;
-            let sumX2 = 0;
-            let sumY2 = 0;
-            let sumDistToObs = 0;
-
-            // (b) Observation visualization
-            const obsGrad = ctx.createRadialGradient(obs.x, obs.y, 4, obs.x, obs.y, 120);
-            obsGrad.addColorStop(0, `rgba(180,200,255,0.05)`);
-            obsGrad.addColorStop(1, `rgba(255,255,255,0)`);
-            ctx.fillStyle = obsGrad;
-            ctx.beginPath();
-            ctx.arc(obs.x, obs.y, 120, 0, Math.PI * 2);
-            ctx.fill();
-
-            // (b.5) Dynamics Prior Visualization (The "Wind")
-            if (currentParams.showPrior) {
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-
-                const gridSize = 40;
-                const arrowLen = 12;
-
-                for (let x = 0; x < W; x += gridSize) {
-                    for (let y = 0; y < H; y += gridSize) {
-                        // Calculate noise at this grid point (same as agent logic)
-                        const scale = 0.0017 * currentParams.noise; // Use current noise param
-                        // Note: We use t*0.7 to match agent time evolution
-                        const n = vnoise(x * scale + t * 0.7, y * scale - t * 0.5);
-                        const ang = n * Math.PI * 2; // Base angle without phase offset
-
-                        const dx = Math.cos(ang) * arrowLen;
-                        const dy = Math.sin(ang) * arrowLen;
-
-                        ctx.moveTo(x, y);
-                        ctx.lineTo(x + dx, y + dy);
-
-                        // Arrowhead (optional, maybe too expensive/cluttered? simple lines are better)
-                    }
-                }
-                ctx.stroke();
+            if (obs.painting) {
+                ctx.fillStyle = "rgba(255, 100, 100, 0.8)";
+                ctx.font = "12px monospace";
+                ctx.fillText("PAINTING OBSTACLES", obs.x + 20, obs.y);
             }
 
-            // (c) & (d) Dynamics + Rollout
+            // -------------------------------------------------------
+            // 1. Draw Environment (Topographic Map)
+            // -------------------------------------------------------
+            const gridSize = 30; // Resolution of map
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'rgba(70, 100, 120, 0.15)'; // Dim map lines
+            ctx.beginPath();
 
-            // We'll track the "Probe" agent (index 0) to send to HUD
+            // Optimization: Don't draw every pixel. Draw marching squares or just grid points?
+            // Simple approach: Draw grid, color changes based on height
+            const wallThreshold = 0.65; // Height > 0.65 is a "Wall"
+
+            for (let x = 0; x < W; x += gridSize) {
+                for (let y = 0; y < H; y += gridSize) {
+                    const h = getTerrainHeight(x, y, t);
+                    if (h > wallThreshold) {
+                        // Draw Wall Segment
+                        ctx.fillStyle = `rgba(200, 100, 100, ${h - wallThreshold})`; // Red hue
+                        ctx.fillRect(x, y, gridSize, gridSize);
+                    } else if (h > 0.5 && h < 0.55) {
+                        // Draw Contour Line
+                        ctx.strokeRect(x, y, 2, 2);
+                    }
+                }
+            }
+            ctx.stroke();
+
+            // 2. Draw User Obstacles (Void Zones)
+            userObstaclesRef.current = userObstaclesRef.current.filter(o => o.life > 0.01);
+
+            userObstaclesRef.current.forEach(o => {
+                o.life *= 0.999; // Slower decay
+
+                ctx.save();
+                ctx.translate(o.x, o.y);
+                ctx.rotate(o.angle + t); // Rotate slowly
+
+                // Outer Dashed Ring
+                ctx.strokeStyle = `rgba(255, 100, 100, ${o.life * 0.5})`;
+                ctx.setLineDash([5, 5]);
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(0, 0, o.radius * o.life, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Inner Void Fill
+                ctx.fillStyle = `rgba(20, 0, 0, ${o.life * 0.8})`; // Dark void
+                ctx.beginPath();
+                ctx.arc(0, 0, o.radius * o.life * 0.85, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Crosshair / X
+                ctx.strokeStyle = `rgba(255, 50, 50, ${o.life * 0.3})`;
+                ctx.setLineDash([]);
+                ctx.beginPath();
+                ctx.moveTo(-o.radius * 0.4, -o.radius * 0.4);
+                ctx.lineTo(o.radius * 0.4, o.radius * 0.4);
+                ctx.moveTo(o.radius * 0.4, -o.radius * 0.4);
+                ctx.lineTo(-o.radius * 0.4, o.radius * 0.4);
+                ctx.stroke();
+
+                ctx.restore();
+            });
+
+            // -------------------------------------------------------
+            // 3. Agent Simulation
+            // -------------------------------------------------------
+            let sumX = 0, sumY = 0, sumX2 = 0, sumY2 = 0, sumDistToObs = 0;
             let probeAgent = agents[0];
 
-            // Prepare batches for colored rendering
-            // Standard: 1 batch
-            // Velocity: 4 batches (Cyan, Magenta, Yellow, White)
-            // Error: 3 batches (Blue, Purple, Red)
-            const batches = {
-                standard: [],
-                // Velocity buckets (by quadrant)
-                v1: [], v2: [], v3: [], v4: [],
-                // Error buckets (by distance)
-                eLow: [], eMid: [], eHigh: []
-            };
+            const batches = { standard: [], v1: [], v2: [], v3: [], v4: [], eLow: [], eMid: [], eHigh: [] };
 
             for (let i = 0; i < agents.length; i++) {
                 const a = agents[i];
 
-                // Dynamics prior (noise field)
+                // A) Terrain Avoidance Force
+                const h = getTerrainHeight(a.x, a.y, t);
+                // Calculate slope
+                const { dx, dy } = gradient(a.x, a.y, t, 5); // Look ahead 5px
+
+                // If on high ground (wall), slide down fast
+                if (h > wallThreshold) {
+                    a.vx -= dx * 10; // Simple gradient descent
+                    a.vy -= dy * 10;
+                }
+
+                // B) User Obstacle Avoidance
+                for (let ob of userObstaclesRef.current) {
+                    const odx = a.x - ob.x;
+                    const ody = a.y - ob.y;
+                    const odist = Math.hypot(odx, ody);
+                    const safeR = ob.radius * ob.life + 5;
+                    if (odist < safeR) {
+                        // Push out
+                        const push = (safeR - odist) * 0.1;
+                        const ang = Math.atan2(ody, odx);
+                        a.vx += Math.cos(ang) * push;
+                        a.vy += Math.sin(ang) * push;
+                    }
+                }
+
+                // C) Standard Dynamics (Noise + Obs Attraction)
                 const scale = 0.0017 * currentParams.noise;
                 const n = vnoise(a.x * scale + t * 0.7, a.y * scale - t * 0.5);
                 const ang = n * Math.PI * 2 + a.phase * 0.3;
 
-                // Observation update
-                const dx = obs.x - a.x;
-                const dy = obs.y - a.y;
-                const dist = Math.hypot(dx, dy) + 1e-5;
+                // Observation update (Attractor)
+                // Only attract if user is NOT painting (painting = obstacle creation mode)
+                // Actually, let's allow both. You are painting barriers, they run to your brush? 
+                // Maybe better: They run to cursor, but cursor leaves barriers behind.
+                const obsDx = obs.x - a.x;
+                const obsDy = obs.y - a.y;
+                const dist = Math.hypot(obsDx, obsDy) + 1e-5;
 
-                // Accumulate for cloud stats
-                sumX += a.x;
-                sumY += a.y;
-                sumX2 += a.x * a.x;
-                sumY2 += a.y * a.y;
-                sumDistToObs += dist;
+                sumX += a.x; sumY += a.y; sumX2 += a.x * a.x; sumY2 += a.y * a.y; sumDistToObs += dist;
 
-                // "Kalman gain" equivalent
                 const K = currentParams.obsWeight * (obs.active ? 1.8 : 0.8);
-                const obsX = (dx / dist) * K;
-                const obsY = (dy / dist) * K;
+                const obsX = (obsDx / dist) * K;
+                const obsY = (obsDy / dist) * K;
 
-                // Belief update
                 a.vx = (a.vx + Math.cos(ang) * 0.15 + obsX) * 0.96;
                 a.vy = (a.vy + Math.sin(ang) * 0.15 + obsY) * 0.96;
 
-                // Rollout
                 const prevX = a.x;
                 const prevY = a.y;
                 a.x += a.vx;
@@ -243,27 +290,24 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
                 if (a.y < 0) a.y += H;
                 if (a.y > H) a.y -= H;
 
-                // Batching for render
+                // Rendering Batches
                 if (currentParams.visualMode === 'velocity') {
-                    // Color by angle
                     const angle = Math.atan2(a.vy, a.vx);
                     if (angle > 0 && angle < 1.57) batches.v1.push(prevX, prevY, a.x, a.y);
                     else if (angle >= 1.57) batches.v2.push(prevX, prevY, a.x, a.y);
                     else if (angle < 0 && angle > -1.57) batches.v3.push(prevX, prevY, a.x, a.y);
                     else batches.v4.push(prevX, prevY, a.x, a.y);
                 } else if (currentParams.visualMode === 'error') {
-                    // Color by distance to obs
                     if (dist < 150) batches.eLow.push(prevX, prevY, a.x, a.y);
                     else if (dist < 400) batches.eMid.push(prevX, prevY, a.x, a.y);
                     else batches.eHigh.push(prevX, prevY, a.x, a.y);
                 } else {
-                    // Standard
                     batches.standard.push(prevX, prevY, a.x, a.y);
                 }
             }
 
+            // Draw Batches
             ctx.lineWidth = currentParams.visualMode === 'error' ? 2 : 1;
-
             const drawBatch = (coords, color) => {
                 if (coords.length === 0) return;
                 ctx.strokeStyle = color;
@@ -276,29 +320,26 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
             };
 
             if (currentParams.visualMode === 'velocity') {
-                drawBatch(batches.v1, 'rgba(0, 255, 255, 0.4)'); // Cyan
-                drawBatch(batches.v2, 'rgba(255, 0, 255, 0.4)'); // Magenta
-                drawBatch(batches.v3, 'rgba(255, 255, 0, 0.4)'); // Yellow
-                drawBatch(batches.v4, 'rgba(255, 255, 255, 0.4)'); // White
+                drawBatch(batches.v1, 'rgba(0, 255, 255, 0.4)');
+                drawBatch(batches.v2, 'rgba(255, 0, 255, 0.4)');
+                drawBatch(batches.v3, 'rgba(255, 255, 0, 0.4)');
+                drawBatch(batches.v4, 'rgba(255, 255, 255, 0.4)');
             } else if (currentParams.visualMode === 'error') {
-                // Heatmap Style: High visibility
-                drawBatch(batches.eLow, 'rgba(0, 255, 100, 0.9)');   // Bright Green (Close)
-                drawBatch(batches.eMid, 'rgba(255, 200, 0, 0.6)');   // Orange/Yellow (Medium)
-                drawBatch(batches.eHigh, 'rgba(255, 0, 50, 0.4)');   // Red (Far)
+                drawBatch(batches.eLow, 'rgba(0, 255, 100, 0.9)');
+                drawBatch(batches.eMid, 'rgba(255, 200, 0, 0.6)');
+                drawBatch(batches.eHigh, 'rgba(255, 0, 50, 0.4)');
             } else {
                 drawBatch(batches.standard, 'rgba(210, 225, 245, 0.08)');
             }
 
-            // Update HUD with Probe + Cloud Stats
             if (onUpdateHUD && agents.length > 0) {
                 const speed = Math.sqrt(probeAgent.vx ** 2 + probeAgent.vy ** 2);
-
                 const N = agents.length;
                 const meanX = sumX / N;
                 const meanY = sumY / N;
                 const varX = sumX2 / N - meanX * meanX;
                 const varY = sumY2 / N - meanY * meanY;
-                const cloudStd = Math.sqrt(Math.max(varX, 0) + Math.max(varY, 0)); // radial std
+                const cloudStd = Math.sqrt(Math.max(varX, 0) + Math.max(varY, 0));
                 const meanErrorToObs = sumDistToObs / N;
 
                 onUpdateHUD({
@@ -309,32 +350,26 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
                     beliefVy: probeAgent.vy,
                     speedNorm: speed,
                     phase: probeAgent.phase,
-
                     obsX: obs.x,
                     obsY: obs.y,
-                    obsActive: obs.active,
-
+                    obsActive: obs.painting || obs.active, // Count painting as active obs
                     beliefRetention: currentParams.memory,
                     stochasticity: currentParams.noise,
                     obsWeight: currentParams.obsWeight,
-
-                    // New: cloud-level stats for WM HUD 2.0
                     cloudCenterX: meanX,
                     cloudCenterY: meanY,
-                    cloudStd,          // spread of the particle cloud
-                    meanErrorToObs,    // avg distance to observation
+                    cloudStd,
+                    meanErrorToObs,
                 });
             }
 
             animationFrameId = requestAnimationFrame(render);
         };
 
-        // Start
         ctx.fillStyle = '#0a0c0e';
         ctx.fillRect(0, 0, W, H);
         render();
 
-        // Cleanup
         return () => {
             cancelAnimationFrame(animationFrameId);
             window.removeEventListener('resize', handleResize);
@@ -345,7 +380,7 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
             window.removeEventListener('touchstart', onDown);
             window.removeEventListener('touchend', onUp);
         };
-    }, []); // Run once on mount
+    }, []);
 
     return (
         <canvas
