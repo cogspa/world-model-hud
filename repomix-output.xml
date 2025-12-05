@@ -61,6 +61,7 @@ src/
 .gitignore
 eslint.config.js
 index.html
+LINKEDIN_DRAFT.md
 package.json
 README.md
 vite.config.js
@@ -85,53 +86,57 @@ export default function IntroOverlay({ onClose, agentCount }) {
         <div id="intro-overlay">
             <div id="intro-card">
                 <h2>World Model Guide</h2>
-                <p className="intro-subtitle">
-                    How to interpret the simulation and spot "Hallucinations".
-                </p>
+                <div style={{ fontSize: '11px', color: '#2997ff', marginBottom: '16px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    Presented by World Model Research
+                </div>
 
                 <div className="intro-section">
-                    <h3>When is it "Hallucinating"?</h3>
-                    <p>
-                        <strong>Hallucination</strong> happens when the AI's internal belief (Agents) diverges from Reality (Mouse).
-                        <br />
-                        <em>Visual Sign:</em> In <strong>Error Heatmap</strong> mode, the particles turn <strong>RED</strong>.
+                    <p style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.6)' }}>
+                        Note: This is a toy, visual metaphor for how a world model behaves.
+                        It’s not a full research system, but it captures the same roles you’d see in a learned neural world model.
                     </p>
                 </div>
 
                 <div className="intro-section">
-                    <h3>Control Recipes</h3>
+                    <h3>In this demo:</h3>
                     <ul>
-                        <li>
-                            <strong>The "Good" Model (Locked In)</strong>
-                            <br />
-                            <span style={{ color: "#4ade80" }}>High Obs Weight + Low Noise.</span>
-                            <br />
-                            The agents tightly track the sensor. The model trusts what it sees more than what it imagines.
-                        </li>
-                        <li style={{ marginTop: "8px" }}>
-                            <strong>The "Dreaming" Model (Hallucinating)</strong>
-                            <br />
-                            <span style={{ color: "#f87171" }}>Low Obs Weight + High Noise.</span>
-                            <br />
-                            The agents ignore the sensor and follow their own internal dynamics (swirls). This is "creativity" or "confusion" depending on context.
-                        </li>
-                        <li style={{ marginTop: "8px" }}>
-                            <strong>The "Amnesiac" Model</strong>
-                            <br />
-                            <span style={{ color: "#60a5fa" }}>Low Memory.</span>
-                            <br />
-                            Trails vanish instantly. The model has no sense of history or momentum.
-                        </li>
+                        <li><strong>Agents (particles)</strong> ≈ samples of the model’s belief about where things are.</li>
+                        <li><strong>The Mouse</strong> ≈ the observer or sensor stream (the “real world”).</li>
+                        <li><strong>vnoise field</strong> ≈ a hand-written dynamics prior – a simple guess about how things tend to move when no new observations arrive.</li>
+                        <li><strong>Sliders</strong> ≈ knobs on the inference process: how much we trust sensors vs prior, how uncertain we are, and how much history we keep.</li>
                     </ul>
                 </div>
 
                 <div className="intro-section">
-                    <h3>Visual Modes</h3>
-                    <ul>
-                        <li><strong>Standard:</strong> See the raw density of beliefs.</li>
-                        <li><strong>Multiverse:</strong> See conflicting predictions (colors = different directions).</li>
-                        <li><strong>Error Heatmap:</strong> Green = Accurate, Red = Hallucinating.</li>
-                    </ul>
+                    <h3>A Real Neural World Model</h3>
+                    <p>
+                        It would keep the same structure—beliefs, observations, dynamics—but the dynamics would be learned by a neural network from data.
+                        It would take a latent state and predict a distribution over the next state:
+                    </p>
+                    <div style={{
+                        background: 'rgba(255,255,255,0.05)',
+                        padding: '12px',
+                        borderRadius: '8px',
+                        margin: '12px 0',
+                        textAlign: 'center',
+                        fontFamily: 'Times New Roman, serif',
+                        fontStyle: 'italic',
+                        fontSize: '48px',
+                        color: '#fff'
+                    }}>
+                        s<sub>t+1</sub> ∼ p<sub>θ</sub>(s<sub>t+1</sub> | s<sub>t</sub>, a<sub>t</sub>)
+                    </div>
+                    <p>
+                        In <strong>“tracking” mode</strong>, it combines those predictions with incoming sensors (like high obs-weight).
+                        <br />
+                        In <strong>“dreaming” mode</strong>, it free-runs forward without observations, imagining futures (like low obs-weight + high noise).
+                    </p>
+                </div>
+
+                <div className="intro-section">
+                    <p>
+                        <strong>So:</strong> this canvas is a simplified stage where you can see the same ideas at work—beliefs, priors, observations, grounding vs hallucinating—that a learned neural world model would use at much higher dimensionality.
+                    </p>
                 </div>
 
                 <button id="intro-close" onClick={onClose}>Got it</button>
@@ -255,13 +260,23 @@ export default function WorldModelControls({
     onToggleTech
 }) {
     const handleChange = (key, value) => {
-        const newValue = key === "visualMode" ? value : parseFloat(value);
+        let newValue = value;
+        if (key !== "visualMode" && typeof value !== "boolean") {
+            newValue = parseFloat(value);
+        }
         setParams((prev) => ({ ...prev, [key]: newValue }));
     };
 
     return (
-        <div className="wm-controls">
-            <div className="wm-controls-title">World-Model Microcosm</div>
+        <div className="wm-controls glass-panel">
+            <div className="wm-controls-title">
+                <a href="https://worldmodelresearch.com" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>
+                    World Model Research
+                </a>
+            </div>
+            <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)', marginBottom: '16px', letterSpacing: '0.05em' }}>
+                INTERACTIVE DEMO
+            </div>
 
             <div className="wm-control-group">
                 <label>Visual Metaphor:</label>
@@ -275,13 +290,24 @@ export default function WorldModelControls({
                         color: "#fff",
                         padding: "4px 8px",
                         borderRadius: "6px",
-                        fontSize: "13px"
+                        fontSize: "13px",
+                        marginBottom: "8px"
                     }}
                 >
                     <option value="standard">Standard (Ghost Trails)</option>
                     <option value="velocity">Multiverse (Color by Angle)</option>
                     <option value="error">Error Heatmap (Dist to Truth)</option>
                 </select>
+
+                <label style={{ display: "flex", alignItems: "center", cursor: "pointer", fontSize: "12px", color: "rgba(255,255,255,0.7)" }}>
+                    <input
+                        type="checkbox"
+                        checked={params.showPrior}
+                        onChange={(e) => handleChange("showPrior", e.target.checked)}
+                        style={{ width: "auto", marginRight: "8px", accentColor: "#2997ff" }}
+                    />
+                    Show Dynamics Prior (The "Wind")
+                </label>
             </div>
 
             <div className="wm-control-group">
@@ -366,258 +392,6 @@ export default function WorldModelControls({
                 </div>
             </div>
         </div>
-    );
-}
-</file>
-
-<file path="src/components/WorldModelHUD.jsx">
-import React, { useState } from "react";
-
-/**
- * Central place for all metric definitions.
- * You can tweak wording here without touching any UI logic.
- */
-const METRIC_DEFS = {
-    probeIndex: {
-        label: "Probe agent index",
-        description:
-            "Which agent’s internal state you’re currently inspecting. " +
-            "Useful when multiple world-model agents are running in parallel.",
-    },
-    latentX: {
-        label: "Latent x",
-        description:
-            "The agent’s internal x-coordinate inside its learned latent world model. " +
-            "This is not a raw simulator coordinate; it’s the position in the model’s ‘mental map’.",
-    },
-    latentY: {
-        label: "Latent y",
-        description:
-            "The agent’s internal y-coordinate in latent space, part of its compressed belief " +
-            "about where it is in the world.",
-    },
-    beliefVx: {
-        label: "Belief vx",
-        description:
-            "Agent’s predicted velocity along the x-axis in latent space. " +
-            "Derived from the world model, not directly from the environment.",
-    },
-    beliefVy: {
-        label: "Belief vy",
-        description:
-            "Agent’s predicted velocity along the y-axis in latent space. " +
-            "Together with Belief vx this forms the belief-velocity vector.",
-    },
-    speedNorm: {
-        label: "Speed ∥v∥",
-        description:
-            "Magnitude of the belief-velocity vector: sqrt(vx² + vy²). " +
-            "Represents how fast the agent thinks it is moving through its internal world.",
-    },
-    phase: {
-        label: "Phase (uncertainty)",
-        description:
-            "Scalar representing uncertainty or phase in the agent’s internal dynamics. " +
-            "Higher values ≈ more uncertain or noisy predictions; lower values ≈ confident, stable dynamics.",
-    },
-    obsX: {
-        label: "Observation x",
-        description:
-            "Last observed x-position coming from the real environment (pixels, coordinates, or sensor input).",
-    },
-    obsY: {
-        label: "Observation y",
-        description:
-            "Last observed y-position from the environment, paired with Observation x.",
-    },
-    obsActive: {
-        label: "Obs active?",
-        description:
-            "Whether a recent observation is currently being used to update the belief state. " +
-            "true = grounded in fresh sensory input, false = running in predictive / imagined mode.",
-    },
-    beliefRetention: {
-        label: "Belief retention",
-        description:
-            "How much of the previous belief state is carried into the next step. " +
-            "High values → slow-changing, memory-rich beliefs; low values → beliefs dominated by new evidence.",
-    },
-    stochasticity: {
-        label: "Stochasticity",
-        description:
-            "Amount of randomness injected into the world-model’s predictions. " +
-            "Higher values encourage more exploratory or chaotic trajectories.",
-    },
-    obsWeight: {
-        label: "Observation wt.",
-        description:
-            "Blend factor between observation and prediction during the update step. " +
-            "High values → perception dominates; low values → internal prediction dominates. " +
-            "Conceptually similar to a Kalman-filter gain, but in learned latent space.",
-    },
-};
-
-/** Tiny info icon (no external icon library needed) */
-const InfoIcon = ({ size = 12 }) => (
-    <svg
-        width={size}
-        height={size}
-        viewBox="0 0 20 20"
-        aria-hidden="true"
-        style={{ display: "block" }}
-    >
-        <circle cx="10" cy="10" r="9" stroke="currentColor" fill="none" />
-        <line x1="10" y1="8" x2="10" y2="14" stroke="currentColor" />
-        <circle cx="10" cy="5" r="1" fill="currentColor" />
-    </svg>
-);
-
-/** Simple tooltip on hover */
-const Tooltip = ({ text }) => (
-    <div className="wm-tooltip">
-        {text}
-    </div>
-);
-
-/** Centered modal for full definitions */
-const DefinitionModal = ({ open, onClose, title, body }) => {
-    if (!open) return null;
-    return (
-        <div className="wm-modal-backdrop" onClick={onClose}>
-            <div
-                className="wm-modal"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="wm-modal-header">
-                    <h2>{title}</h2>
-                    <button className="wm-modal-close" onClick={onClose}>
-                        ×
-                    </button>
-                </div>
-                <div className="wm-modal-body">
-                    <p>{body}</p>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-/**
- * WorldModelHUD
- * Props:
- *   state: {
- *     probeIndex,
- *     latentX, latentY,
- *     beliefVx, beliefVy, speedNorm, phase,
- *     obsX, obsY, obsActive,
- *     beliefRetention, stochasticity, obsWeight
- *   }
- */
-export default function WorldModelHUD({ state }) {
-    const [hoverKey, setHoverKey] = useState(null);
-    const [modalMetric, setModalMetric] = useState(null);
-
-    const openModal = (metricKey) => {
-        setModalMetric(metricKey);
-    };
-
-    const closeModal = () => setModalMetric(null);
-
-    const renderRow = (metricKey, valueFormatter = (v) => v) => {
-        const def = METRIC_DEFS[metricKey];
-        if (!def) return null;
-        const value = valueFormatter(state?.[metricKey]);
-
-        return (
-            <div
-                key={metricKey}
-                className="wm-row"
-                onMouseLeave={() => setHoverKey(null)}
-            >
-                <div className="wm-row-label" onClick={() => openModal(metricKey)}>
-                    {def.label}
-                </div>
-                <div className="wm-row-value">{value}</div>
-
-                <div
-                    className="wm-info-wrapper"
-                    onMouseEnter={() => setHoverKey(metricKey)}
-                    onFocus={() => setHoverKey(metricKey)}
-                    onClick={() => openModal(metricKey)}
-                >
-                    <InfoIcon />
-                    {hoverKey === metricKey && <Tooltip text={def.description} />}
-                </div>
-            </div>
-        );
-    };
-
-    return (
-        <>
-            <div className="wm-hud">
-                <div className="wm-hud-title">World-Model HUD</div>
-
-                <div className="wm-hud-section-label">Agent</div>
-                {renderRow("probeIndex", (v) => (v ?? 0))}
-
-                <div className="wm-hud-section-label">Latent position</div>
-                {renderRow("latentX", (v) => (v != null ? v.toFixed(1) : "—"))}
-                {renderRow("latentY", (v) => (v != null ? v.toFixed(1) : "—"))}
-
-                <div className="wm-hud-section-label">Belief dynamics</div>
-                {renderRow("beliefVx", (v) => (v != null ? v.toFixed(3) : "—"))}
-                {renderRow("beliefVy", (v) => (v != null ? v.toFixed(3) : "—"))}
-                {renderRow("speedNorm", (v) => (v != null ? v.toFixed(3) : "—"))}
-                {renderRow("phase", (v) => (v != null ? v.toFixed(3) : "—"))}
-
-                <div className="wm-hud-section-label">Observations</div>
-                {renderRow("obsX", (v) => (v != null ? v.toFixed(1) : "—"))}
-                {renderRow("obsY", (v) => (v != null ? v.toFixed(1) : "—"))}
-                {renderRow("obsActive", (v) => (v ? "true" : "false"))}
-
-                <div className="wm-hud-section-label">Meta-parameters</div>
-                {renderRow("beliefRetention", (v) =>
-                    v != null ? v.toFixed(3) : "—"
-                )}
-                {renderRow("stochasticity", (v) =>
-                    v != null ? v.toFixed(2) : "—"
-                )}
-                {renderRow("obsWeight", (v) =>
-                    v != null ? v.toFixed(3) : "—"
-                )}
-
-                <div className="wm-hud-section-label" style={{ marginTop: 16, color: "#fff" }}>
-                    System Status
-                </div>
-                <div style={{
-                    marginTop: 4,
-                    padding: "8px 10px",
-                    background: "rgba(255,255,255,0.05)",
-                    borderRadius: 6,
-                    fontSize: "11px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center"
-                }}>
-                    <span>Regime:</span>
-                    <strong style={{
-                        color: (state?.obsWeight > 0.2 && state?.stochasticity < 1.2) ? "#4ade80" :
-                            (state?.obsWeight < 0.05) ? "#f87171" : "#fbbf24"
-                    }}>
-                        {(state?.obsWeight > 0.2 && state?.stochasticity < 1.2) ? "LOCKED (Stable)" :
-                            (state?.obsWeight < 0.05) ? "HALLUCINATING" : "UNCERTAIN"}
-                    </strong>
-                </div>
-            </div>
-
-            {/* Pop-up with full definition */}
-            <DefinitionModal
-                open={!!modalMetric}
-                onClose={closeModal}
-                title={modalMetric ? METRIC_DEFS[modalMetric].label : ""}
-                body={modalMetric ? METRIC_DEFS[modalMetric].description : ""}
-            />
-        </>
     );
 }
 </file>
@@ -773,6 +547,35 @@ export default function WorldModelSimulation({ onUpdateHUD, params, onAgentCount
             ctx.beginPath();
             ctx.arc(obs.x, obs.y, 120, 0, Math.PI * 2);
             ctx.fill();
+
+            // (b.5) Dynamics Prior Visualization (The "Wind")
+            if (currentParams.showPrior) {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+
+                const gridSize = 40;
+                const arrowLen = 12;
+
+                for (let x = 0; x < W; x += gridSize) {
+                    for (let y = 0; y < H; y += gridSize) {
+                        // Calculate noise at this grid point (same as agent logic)
+                        const scale = 0.0017 * currentParams.noise; // Use current noise param
+                        // Note: We use t*0.7 to match agent time evolution
+                        const n = vnoise(x * scale + t * 0.7, y * scale - t * 0.5);
+                        const ang = n * Math.PI * 2; // Base angle without phase offset
+
+                        const dx = Math.cos(ang) * arrowLen;
+                        const dy = Math.sin(ang) * arrowLen;
+
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x + dx, y + dy);
+
+                        // Arrowhead (optional, maybe too expensive/cluttered? simple lines are better)
+                    }
+                }
+                ctx.stroke();
+            }
 
             // (c) & (d) Dynamics + Rollout
 
@@ -988,8 +791,21 @@ export default function WorldModelStory({ params }) {
     }, [params.obsWeight, params.noise, params.memory]);
 
     return (
-        <div className="wm-story-hud">
+        <div className="wm-story-hud glass-panel">
             {story}
+            <div style={{
+                marginTop: 12,
+                paddingTop: 12,
+                borderTop: "1px solid rgba(255,255,255,0.1)",
+                fontSize: "12px",
+                fontFamily: "Times New Roman, serif",
+                fontStyle: "italic",
+                color: "rgba(255,255,255,0.6)"
+            }}>
+                <span title="Evidence Lower Bound (ELBO) - The core objective function for training World Models">
+                    L(θ, φ) = <span style={{ color: "#4ade80" }}>E<sub>q</sub>[ln p(x|z)]</span> - <span style={{ color: "#f87171" }}>β D<sub>KL</sub>[q(z|x) || p(z)]</span>
+                </span>
+            </div>
         </div>
     );
 }
@@ -1061,6 +877,7 @@ const App = () => {
     noise: 1.0,
     obsWeight: 0.08,
     visualMode: "standard", // standard, velocity, error
+    showPrior: false,
   });
 
   return (
@@ -1128,6 +945,81 @@ export default App;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #050509;
+  overflow: hidden;
+  /* Prevent scrollbars */
+}
+
+/* CRT Scanline Effect */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.1) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.6;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+/* Custom Range Slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  margin: 6px 0;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 50%;
+  background: #2997ff;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -5px;
+  /* center on track */
+  box-shadow: 0 0 10px rgba(41, 151, 255, 0.5);
+  transition: transform 0.1s, background 0.2s;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  transform: scale(1.1);
+  background: #4dabf7;
+}
+
+input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(0.95);
+  background: #1c7ed6;
 }
 
 a {
@@ -1187,6 +1079,23 @@ button:focus-visible {
   }
 }
 
+/* Shared Glass Panel Style */
+.glass-panel {
+  background: rgba(15, 18, 22, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  color: #cfd7df;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: border-color 0.2s;
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
 /* HUD container */
 .wm-hud {
   position: absolute;
@@ -1194,16 +1103,23 @@ button:focus-visible {
   top: 24px;
   min-width: 260px;
   max-width: 320px;
-  padding: 16px 18px;
-  background: rgba(10, 10, 15, 0.92);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: #f7f7ff;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    sans-serif;
+  padding: 20px;
   font-size: 12px;
-  line-height: 1.3;
+  line-height: 1.4;
   pointer-events: auto;
+  z-index: 10;
+}
+
+/* Controls Container */
+.wm-controls {
+  position: fixed;
+  left: 24px;
+  top: 24px;
+  width: 280px;
+  padding: 20px;
+  font-size: 13px;
+  line-height: 1.4;
+  z-index: 50;
 }
 
 /* Title */
@@ -1340,6 +1256,15 @@ button:focus-visible {
   color: #fff;
 }
 
+.wm-controls-title a {
+  transition: color 0.2s;
+}
+
+.wm-controls-title a:hover {
+  color: #2997ff !important;
+  text-shadow: 0 0 8px rgba(41, 151, 255, 0.5);
+}
+
 .wm-control-row {
   display: flex;
   justify-content: space-between;
@@ -1424,6 +1349,8 @@ button:focus-visible {
 
 #intro-card {
   max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
   background: #11151b;
   border-radius: 16px;
   padding: 24px 28px;
@@ -1507,18 +1434,8 @@ button:focus-visible {
   transform: translateX(-50%);
   width: min(600px, 90vw);
   padding: 16px 24px;
-  background: rgba(15, 18, 22, 0.85);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #e2e8f0;
-  font-family: system-ui, -apple-system, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   z-index: 40;
-  transition: all 0.3s ease;
 }
 
 .wm-story-hud strong {
@@ -1733,6 +1650,81 @@ export default defineConfig([
 </html>
 </file>
 
+<file path="LINKEDIN_DRAFT.md">
+# LinkedIn Post Draft: Visualizing the Mind of an AI
+
+**Option 1: The "Educational" Angle (Focus on understanding)**
+
+**Headline:** Ever wondered what an AI "hallucination" actually looks like mathematically? 🧠✨
+
+We talk a lot about World Models (like Dreamer, JEPA, or Sora) and how they "predict the future." But concepts like *latent state*, *uncertainty collapse*, and *dynamics priors* can feel incredibly abstract.
+
+I wanted to build something that makes these invisible math concepts tangible.
+
+Introducing the **World Model HUD** — an interactive visualization of an AI's internal belief state.
+
+Instead of a black box, you see the raw probability cloud:
+🔴 **Red Particles:** The AI is "dreaming" (hallucinating) — its internal predictions have drifted away from reality.
+🟢 **Green Particles:** The AI is "grounded" — its observations match its predictions.
+🌪️ **The Swirls:** The "Dynamics Prior" — the AI's innate intuition of how the world *should* move.
+
+You can tweak the parameters in real-time:
+*   Turn down **Observation Weight** to watch the AI detach from reality and drift into its own imagination.
+*   Crank up **Stochasticity** to see it become confused and uncertain.
+
+It’s a toy simulation, but it maps directly to the equations used in state-of-the-art research ($s_{t+1} \sim p_\theta(s_{t+1} | s_t, a_t)$).
+
+Check out the code and try it yourself: [Link to GitHub/Demo]
+
+#WorldModels #AI #MachineLearning #Visualization #GenerativeAI #Research
+
+---
+
+**Option 2: The "Design/UX" Angle (Focus on the interface)**
+
+**Headline:** Designing a UI for the "Black Box" 🎛️
+
+How do we design interfaces for probabilistic systems? Traditional UI is binary (On/Off, True/False). But modern AI is probabilistic—it's never 100% sure of anything.
+
+I built the **World Model HUD** to explore how we can communicate *uncertainty* to a user.
+
+Using a sci-fi HUD aesthetic (React + Canvas), I visualized the "Latent State" of a simple agent. The goal was to create a "Narrative HUD" that doesn't just show numbers, but tells a story about the system's health:
+
+*   "The AI is Dreaming"
+*   "The AI is Dogmatic"
+*   "The AI is Confused"
+
+By mapping mathematical thresholds (ELBO, KL Divergence) to human-readable states, we can make complex AI behaviors intuitive.
+
+This project is open source. I'd love to hear how others are thinking about UX for agents and world models!
+
+Repo: [Link to GitHub]
+
+#UIUX #DesignEngineering #AI #React #DataViz #CreativeCoding
+
+---
+
+**Option 3: Short & Punchy (Video/GIF context)**
+
+*(Best used if you attach a screen recording of the "Error Heatmap" mode)*
+
+**Headline:** Inside the mind of a World Model. 🌪️
+
+This isn't a fluid simulation. It's a visualization of **Belief**.
+
+I built this interactive demo to show how AI agents balance "Observation" (what they see) vs. "Prediction" (what they imagine).
+
+*   **The Mouse** = Reality (Sensor Data)
+*   **The Particles** = The AI's Hypotheses
+*   **The Color** = The Error (Red = Hallucination)
+
+Watch what happens when I cut the sensor feed: the agents stop tracking reality and start following their internal "dream" logic. This is exactly what happens when an LLM hallucinates—it stops looking at the context and starts following its own internal priors.
+
+Code is up on GitHub: [Link]
+
+#ArtificialIntelligence #WorldModels #TechDemo #OpenSource
+</file>
+
 <file path="package.json">
 {
   "name": "world_model_hud",
@@ -1769,25 +1761,6 @@ export default defineConfig([
 }
 </file>
 
-<file path="README.md">
-# React + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-</file>
-
 <file path="vite.config.js">
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
@@ -1796,6 +1769,349 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
 })
+</file>
+
+<file path="src/components/WorldModelHUD.jsx">
+import React, { useState } from "react";
+
+/**
+ * Central place for all metric definitions.
+ * You can tweak wording here without touching any UI logic.
+ */
+const METRIC_DEFS = {
+    probeIndex: {
+        label: "Probe agent index",
+        description:
+            "Which agent’s internal state you’re currently inspecting. " +
+            "Useful when multiple world-model agents are running in parallel.",
+    },
+    latentX: {
+        label: "Latent x",
+        description:
+            "The agent’s internal x-coordinate inside its learned latent world model. " +
+            "This is not a raw simulator coordinate; it’s the position in the model’s ‘mental map’.",
+    },
+    latentY: {
+        label: "Latent y",
+        description:
+            "The agent’s internal y-coordinate in latent space, part of its compressed belief " +
+            "about where it is in the world.",
+    },
+    beliefVx: {
+        label: "Belief vx",
+        description:
+            "Agent’s predicted velocity along the x-axis in latent space. " +
+            "Derived from the world model, not directly from the environment.",
+    },
+    beliefVy: {
+        label: "Belief vy",
+        description:
+            "Agent’s predicted velocity along the y-axis in latent space. " +
+            "Together with Belief vx this forms the belief-velocity vector.",
+    },
+    speedNorm: {
+        label: "Speed ∥v∥",
+        description:
+            "Magnitude of the belief-velocity vector: sqrt(vx² + vy²). " +
+            "Represents how fast the agent thinks it is moving through its internal world.",
+    },
+    phase: {
+        label: "Phase (uncertainty)",
+        description:
+            "Scalar representing uncertainty or phase in the agent’s internal dynamics. " +
+            "Higher values ≈ more uncertain or noisy predictions; lower values ≈ confident, stable dynamics.",
+    },
+    obsX: {
+        label: "Observation x",
+        description:
+            "Last observed x-position coming from the real environment (pixels, coordinates, or sensor input).",
+    },
+    obsY: {
+        label: "Observation y",
+        description:
+            "Last observed y-position from the environment, paired with Observation x.",
+    },
+    obsActive: {
+        label: "Obs active?",
+        description:
+            "Whether a recent observation is currently being used to update the belief state. " +
+            "true = grounded in fresh sensory input, false = running in predictive / imagined mode.",
+    },
+    beliefRetention: {
+        label: "Belief retention",
+        description:
+            "How much of the previous belief state is carried into the next step. " +
+            "High values → slow-changing, memory-rich beliefs; low values → beliefs dominated by new evidence.",
+    },
+    stochasticity: {
+        label: "Stochasticity",
+        description:
+            "Amount of randomness injected into the world-model’s predictions. " +
+            "Higher values encourage more exploratory or chaotic trajectories.",
+    },
+    obsWeight: {
+        label: "Observation wt.",
+        description:
+            "Blend factor between observation and prediction during the update step. " +
+            "High values → perception dominates; low values → internal prediction dominates. " +
+            "Conceptually similar to a Kalman-filter gain, but in learned latent space.",
+    },
+};
+
+/** Tiny info icon (no external icon library needed) */
+const InfoIcon = ({ size = 12 }) => (
+    <svg
+        width={size}
+        height={size}
+        viewBox="0 0 20 20"
+        aria-hidden="true"
+        style={{ display: "block" }}
+    >
+        <circle cx="10" cy="10" r="9" stroke="currentColor" fill="none" />
+        <line x1="10" y1="8" x2="10" y2="14" stroke="currentColor" />
+        <circle cx="10" cy="5" r="1" fill="currentColor" />
+    </svg>
+);
+
+/** Simple tooltip on hover */
+const Tooltip = ({ text }) => (
+    <div className="wm-tooltip">
+        {text}
+    </div>
+);
+
+/** Centered modal for full definitions */
+const DefinitionModal = ({ open, onClose, title, body }) => {
+    if (!open) return null;
+    return (
+        <div className="wm-modal-backdrop" onClick={onClose}>
+            <div
+                className="wm-modal"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="wm-modal-header">
+                    <h2>{title}</h2>
+                    <button className="wm-modal-close" onClick={onClose}>
+                        ×
+                    </button>
+                </div>
+                <div className="wm-modal-body">
+                    <p>{body}</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+/**
+ * WorldModelHUD
+ * Props:
+ *   state: {
+ *     probeIndex,
+ *     latentX, latentY,
+ *     beliefVx, beliefVy, speedNorm, phase,
+ *     obsX, obsY, obsActive,
+ *     beliefRetention, stochasticity, obsWeight
+ *   }
+ */
+export default function WorldModelHUD({ state }) {
+    const [hoverKey, setHoverKey] = useState(null);
+    const [modalMetric, setModalMetric] = useState(null);
+
+    const openModal = (metricKey) => {
+        setModalMetric(metricKey);
+    };
+
+    const closeModal = () => setModalMetric(null);
+
+    const renderRow = (metricKey, valueFormatter = (v) => v) => {
+        const def = METRIC_DEFS[metricKey];
+        if (!def) return null;
+        const value = valueFormatter(state?.[metricKey]);
+
+        return (
+            <div
+                key={metricKey}
+                className="wm-row"
+                onMouseLeave={() => setHoverKey(null)}
+            >
+                <div className="wm-row-label" onClick={() => openModal(metricKey)}>
+                    {def.label}
+                </div>
+                <div className="wm-row-value">{value}</div>
+
+                <div
+                    className="wm-info-wrapper"
+                    onMouseEnter={() => setHoverKey(metricKey)}
+                    onFocus={() => setHoverKey(metricKey)}
+                    onClick={() => openModal(metricKey)}
+                >
+                    <InfoIcon />
+                    {hoverKey === metricKey && <Tooltip text={def.description} />}
+                </div>
+            </div>
+        );
+    };
+
+    return (
+        <>
+            <div className="wm-hud glass-panel">
+                <div className="wm-hud-title">World-Model HUD</div>
+
+                <div className="wm-hud-section-label">Agent</div>
+                {renderRow("probeIndex", (v) => (v ?? 0))}
+
+                <div className="wm-hud-section-label">Latent position</div>
+                {renderRow("latentX", (v) => (v != null ? v.toFixed(1) : "—"))}
+                {renderRow("latentY", (v) => (v != null ? v.toFixed(1) : "—"))}
+
+                <div className="wm-hud-section-label">Belief dynamics</div>
+                {renderRow("beliefVx", (v) => (v != null ? v.toFixed(3) : "—"))}
+                {renderRow("beliefVy", (v) => (v != null ? v.toFixed(3) : "—"))}
+                {renderRow("speedNorm", (v) => (v != null ? v.toFixed(3) : "—"))}
+                {renderRow("phase", (v) => (v != null ? v.toFixed(3) : "—"))}
+
+                <div className="wm-hud-section-label">Observations</div>
+                {renderRow("obsX", (v) => (v != null ? v.toFixed(1) : "—"))}
+                {renderRow("obsY", (v) => (v != null ? v.toFixed(1) : "—"))}
+                {renderRow("obsActive", (v) => (v ? "true" : "false"))}
+
+                <div className="wm-hud-section-label">Meta-parameters</div>
+                {renderRow("beliefRetention", (v) =>
+                    v != null ? v.toFixed(3) : "—"
+                )}
+                {renderRow("stochasticity", (v) =>
+                    v != null ? v.toFixed(2) : "—"
+                )}
+                {renderRow("obsWeight", (v) =>
+                    v != null ? v.toFixed(3) : "—"
+                )}
+
+                <div className="wm-hud-section-label" style={{ marginTop: 16, color: "#fff" }}>
+                    System Status
+                </div>
+                <div style={{
+                    marginTop: 4,
+                    padding: "8px 10px",
+                    background: "rgba(255,255,255,0.05)",
+                    borderRadius: 6,
+                    fontSize: "11px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                }}>
+                    <span>Regime:</span>
+                    <strong style={{
+                        color: (state?.obsWeight > 0.2 && state?.stochasticity < 1.2) ? "#4ade80" :
+                            (state?.obsWeight < 0.05) ? "#f87171" : "#fbbf24"
+                    }}>
+                        {(state?.obsWeight > 0.2 && state?.stochasticity < 1.2) ? "LOCKED (Stable)" :
+                            (state?.obsWeight < 0.05) ? "HALLUCINATING" : "UNCERTAIN"}
+                    </strong>
+                </div>
+
+                <div style={{ marginTop: 20, textAlign: "center" }}>
+                    <a href="https://worldmodelresearch.com" target="_blank" rel="noopener noreferrer">
+                        <img
+                            src="/wmr-logo.png"
+                            alt="World Model Research"
+                            style={{ width: "100%", maxWidth: 120, opacity: 0.8, transition: "opacity 0.2s" }}
+                            onMouseOver={(e) => e.currentTarget.style.opacity = 1}
+                            onMouseOut={(e) => e.currentTarget.style.opacity = 0.8}
+                        />
+                    </a>
+                    <div style={{
+                        marginTop: 12,
+                        fontSize: "9px",
+                        color: "rgba(255, 255, 255, 0.3)",
+                        letterSpacing: "0.05em"
+                    }}>
+                        Concept Design by Joe Micallef (COGSPA) 2025
+                    </div>
+                </div>
+            </div>
+
+            {/* Pop-up with full definition */}
+            <DefinitionModal
+                open={!!modalMetric}
+                onClose={closeModal}
+                title={modalMetric ? METRIC_DEFS[modalMetric].label : ""}
+                body={modalMetric ? METRIC_DEFS[modalMetric].description : ""}
+            />
+        </>
+    );
+}
+</file>
+
+<file path="README.md">
+# World Model HUD
+
+**An interactive visualization of how AI agents "imagine" the future.**
+
+[![World Model Research](https://img.shields.io/badge/Presented%20by-World%20Model%20Research-2997ff)](https://worldmodelresearch.com)
+
+This project is a visual metaphor for **Neural World Models** (like Dreamer, JEPA, or RSSM). It visualizes the internal "latent state" of an AI as a particle system, allowing you to intuitively understand concepts like **uncertainty**, **hallucination**, and **Bayesian filtering**.
+
+## 🎮 Interactive Demo
+
+The simulation visualizes a **Particle Filter** (Sequential Monte Carlo) running in real-time:
+
+*   **Agents (Particles)**: Represent independent hypotheses about the state of the world.
+*   **The Mouse**: Represents the "Ground Truth" or Sensor Observation.
+*   **The "Wind" (Dynamics Prior)**: Represents the AI's internal prediction of how the world moves (without data).
+
+### Key Features
+
+*   **Interactive Controls**: Tweak the fundamental parameters of the AI's brain:
+    *   **Observation Weight**: How much does the AI trust its eyes vs. its imagination?
+    *   **Stochasticity (Noise)**: How "creative" or confused is the AI?
+    *   **Belief Retention (Memory)**: How long does it hold onto past predictions?
+*   **Visual Modes**:
+    *   **Standard**: Ghost trails showing density.
+    *   **Multiverse**: Colors particles by direction, visualizing divergent futures.
+    *   **Error Heatmap**: Turns particles **Green** (accurate) or **Red** (hallucinating) based on distance from reality.
+*   **Narrative HUD**: A dynamic story engine that diagnoses the AI's state (e.g., *"The AI is dreaming"*, *"The AI is dogmatic"*).
+*   **Technical Panel**: View the underlying math (Kalman Filter / ELBO) and the code driving the simulation.
+
+## 🧠 The Science
+
+This demo maps directly to the mathematics of **Variational Inference**:
+
+$$ s_{t+1} \sim p_\theta(s_{t+1} | s_t, a_t) $$
+
+*   **Tracking Mode**: High observation weight. The model collapses its probability cloud to match the sensor data.
+*   **Dreaming Mode**: Low observation weight + High noise. The model ignores the sensor and "hallucinates" a future based on its internal dynamics prior.
+
+## 🛠️ Tech Stack
+
+*   **React 18**: UI and State Management.
+*   **Vite**: Fast build tool.
+*   **HTML5 Canvas**: High-performance 2D particle rendering (10,000+ agents).
+*   **CSS Glassmorphism**: Custom "Sci-Fi HUD" aesthetic.
+
+## 🚀 Getting Started
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/cogspa/world-model-hud.git
+    cd world-model-hud
+    ```
+
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Run the development server**
+    ```bash
+    npm run dev
+    ```
+
+4.  Open `http://localhost:5173` in your browser.
+
+## 📄 License
+
+MIT License. Feel free to use this code for educational purposes or your own research demos.
 </file>
 
 </files>
